@@ -69,11 +69,11 @@
 
 
 		<!-- DEMO 示例模块【微服务启动请注释掉】 -->
-		<dependency>
+		<!--<dependency>
 			<groupId>org.jeecgframework.boot</groupId>
 			<artifactId>jeecg-boot-module-demo</artifactId>
 			<version>3.1.0</version>
-		</dependency>
+		</dependency>-->
 
 	</dependencies>
 
@@ -84,7 +84,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<!--微服务模式下修改为true,跳过此打包插件，否则微服务模块无法引用-->
-					<skip>false</skip>
+					<skip>true</skip>
 				</configuration>
 			</plugin>
 		</plugins>

@@ -1,4 +1,4 @@
-package org.jeecg.modules.demo.test.controller;
+package org.jeecg.modules.demo.nlp.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.NameValuePair;
@@ -26,7 +26,7 @@ import java.util.Map;
  * @date: 2022年03月15日 14:59
  */
 @RestController
-@RequestMapping("/test/jeecgDemo")
+@RequestMapping("/nlp/jeecgDemo")
 @Slf4j
 public class JeecgDemoController {
     @GetMapping(value = "/hello")
@@ -36,7 +36,7 @@ public class JeecgDemoController {
         //申请的接口地址
         String url="http://comdo.hanlp.com/hanlp/v1/segment/standard";
         //所有参数
-        String text="HanLP是GitHub上最成功的NLP项目，全球数百万NLP开发者的共同选择！！！";
+        String text="四川成都至西藏拉萨，川藏南线318全长2150公里，23天抵达。";
         Map<String,Object> params=new HashMap<String,Object>();
         params.put("text", text);
         //执行api

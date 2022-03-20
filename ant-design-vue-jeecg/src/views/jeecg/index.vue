@@ -14,7 +14,7 @@
     },
     methods: {
       hello () {
-        var url = "/test/jeecgDemo/hello"
+        var url = "/jeecg-system/nlp/jeecgDemo/hello"
         getAction(url).then((res) => {
           if (res.success) {
             this.msg = res.result;
