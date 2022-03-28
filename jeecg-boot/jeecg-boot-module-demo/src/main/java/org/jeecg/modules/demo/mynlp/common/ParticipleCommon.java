@@ -1,6 +1,10 @@
-package org.jeecg.modules.demo.nlp.controller;
+package org.jeecg.modules.demo.mynlp.common;/**
+ * @author sq
+ * @create 2022-03-28-20:51
+ */
 
-import lombok.extern.slf4j.Slf4j;
+
+import com.google.gson.Gson;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -9,10 +13,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.jeecg.common.api.vo.Result;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.jeecg.modules.demo.mynlp.model.ParticipleData;
+import org.jeecg.modules.demo.mynlp.model.ParticipleModel;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,35 +23,50 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
  * @Description: TODO
  * @author: ydy
- * @date: 2022年03月15日 14:59
+ * @date: 2022年03月28日 20:51
  */
-@RestController
-@RequestMapping("/nlp/jeecgDemo")
-@Slf4j
-public class JeecgDemoController {
-    @GetMapping(value = "/hello")
-    public Result<String> hello() {
+public class ParticipleCommon {
+    public String getHanLPParticipleNS(String text){
+        //Map<String, ParticipleModel> personMap = new HashMap<>();
+        Gson gson = new Gson();
+        ParticipleData participleData = gson.fromJson(text, ParticipleData.class);
+        System.out.println(participleData);
+        ParticipleModel[] data = participleData.getData();
+        ArrayList<ParticipleModel> list = new ArrayList();
+        for (int i = 0; i < data.length; i++) {
+            if(data[i].getNature().equals("n") || data[i].getNature().equals("ns")){
+                list.add(data[i]);
+            }
+        }
+        ParticipleData participleData_result = new ParticipleData();
+        participleData_result.setCode("0");
+        //java中的强制类型转换只是针对单个对象的，想要偷懒将整个数组转换成另外一种类型的数组是不行的，这和数组初始化时需要一个个来也是类似的。
+        //ParticipleModel[]  da = (ParticipleModel[])list.toArray();
+        ParticipleModel[] participleModels = list.toArray(new ParticipleModel[list.size()]);
+        participleData_result.setData(participleModels);
+        String participleJsonString = gson.toJson(participleData_result);
+        return participleJsonString;
+    }
+    public String getHanLPParticiple(String text,String type){
         //请求头中的token
-        String token= "c28328e81f7543bfb65c7830ab9089d11646989916771token";
+        String token= "1145e79449474c64aa599cf7b860430a1648478554467token";
         //申请的接口地址
         String url="http://comdo.hanlp.com/hanlp/v1/segment/standard";
-        //所有参数
-        String text="四川成都至西藏拉萨，川藏南线318全长2150公里，23天抵达。";
         Map<String,Object> params=new HashMap<String,Object>();
         params.put("text", text);
         //执行api
-        String result_HanLP = doHanlpApi(token,url,params);
-
-        Result<String> result = new Result<String>();
-        result.setResult(result_HanLP);
-        result.setSuccess(true);
-        return result;
+        String data_HanLP = doHanlpApi(token,url,params);
+        String result_HanLP = data_HanLP;
+        if("get_n".equals(type)){
+            result_HanLP = getHanLPParticipleNS(data_HanLP);
+        }
+        return result_HanLP;
     }
-
-    public static String doHanlpApi(String token,String url,Map<String,Object> params) {
+    public String doHanlpApi(String token,String url,Map<String,Object> params) {
         // 创建Httpclient对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
         CloseableHttpResponse response = null;
