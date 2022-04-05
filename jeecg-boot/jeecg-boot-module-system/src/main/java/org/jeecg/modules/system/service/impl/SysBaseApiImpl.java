@@ -50,7 +50,7 @@ import java.util.*;
 /**
  * @Description: 底层共通业务API，提供其他独立模块调用
  * @Author: scott
- * @Date:2019-4-20 
+ * @Date:2019-4-20
  * @Version:V1.0
  */
 @Slf4j
@@ -558,7 +558,7 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 		QueryWrapper<SysDict> queryWrapper = new QueryWrapper<SysDict>();
 		queryWrapper.orderByAsc("create_time");
 		List<SysDict> dicts = sysDictService.list(queryWrapper);
-		// 封装成 model
+		// 封装成 entity
 		List<DictModel> list = new ArrayList<DictModel>();
 		for (SysDict dict : dicts) {
 			list.add(new DictModel(dict.getDictCode(), dict.getDictName()));

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 
 /**
- * push cookies to model as cookieMap
+ * push cookies to entity as cookieMap
  *
  * @author xuxueli 2015-12-12 18:09:04
  */
@@ -36,8 +36,8 @@ public class CookieInterceptor extends HandlerInterceptorAdapter {
 		if (modelAndView != null) {
 			modelAndView.addObject("I18nUtil", FtlUtil.generateStaticModel(I18nUtil.class.getName()));
 		}
-		
+
 		super.postHandle(request, response, handler, modelAndView);
 	}
-	
+
 }

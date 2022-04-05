@@ -13,8 +13,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.jeecg.modules.demo.mynlp.model.ParticipleData;
-import org.jeecg.modules.demo.mynlp.model.ParticipleModel;
+import org.jeecg.modules.demo.mynlp.entity.HanLPParticipleData;
+import org.jeecg.modules.demo.mynlp.entity.ParticipleModel;
 
 
 import java.io.IOException;
@@ -29,11 +29,11 @@ import java.util.Map;
  * @author: ydy
  * @date: 2022年03月28日 20:51
  */
-public class ParticipleCommon {
+public class HanLPParticipleCommon {
     public String getHanLPParticipleNS(String text){
         //Map<String, ParticipleModel> personMap = new HashMap<>();
         Gson gson = new Gson();
-        ParticipleData participleData = gson.fromJson(text, ParticipleData.class);
+        HanLPParticipleData participleData = gson.fromJson(text, HanLPParticipleData.class);
         System.out.println(participleData);
         ParticipleModel[] data = participleData.getData();
         ArrayList<ParticipleModel> list = new ArrayList();
@@ -42,7 +42,7 @@ public class ParticipleCommon {
                 list.add(data[i]);
             }
         }
-        ParticipleData participleData_result = new ParticipleData();
+        HanLPParticipleData participleData_result = new HanLPParticipleData();
         participleData_result.setCode("0");
         //java中的强制类型转换只是针对单个对象的，想要偷懒将整个数组转换成另外一种类型的数组是不行的，这和数组初始化时需要一个个来也是类似的。
         //ParticipleModel[]  da = (ParticipleModel[])list.toArray();
@@ -53,7 +53,7 @@ public class ParticipleCommon {
     }
     public String getHanLPParticiple(String text,String type){
         //请求头中的token
-        String token= "1145e79449474c64aa599cf7b860430a1648478554467token";
+        String token= "556530700a074f57bb238d6146be412d1648730209277token";
         //申请的接口地址
         String url="http://comdo.hanlp.com/hanlp/v1/segment/standard";
         Map<String,Object> params=new HashMap<String,Object>();

@@ -1,4 +1,4 @@
-package org.jeecg.modules.demo.mynlp.model;
+package org.jeecg.modules.demo.mynlp.entity;
 
 
 import java.util.Objects;

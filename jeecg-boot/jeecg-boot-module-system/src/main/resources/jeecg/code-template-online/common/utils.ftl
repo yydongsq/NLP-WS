@@ -34,7 +34,7 @@
   <#return camelToChar(str, "-", case)>
 </#function>
 <#---->
-<#-- 获取 v-model 属性 -->
+<#-- 获取 v-entity 属性 -->
 <#function getVModel po,suffix="">
   <#return "v-model=\"queryParam.${po.fieldName}${suffix}\"">
 </#function>

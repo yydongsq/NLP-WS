@@ -8090,7 +8090,7 @@ function converDataValue(value, dimInfo) {
   return value == null || value === '' ? NaN : +value; // If string (like '-'), using '+' parse to NaN
 }
 /**
- * Create a model proxy to be used in tooltip for edge data, markLine data, markPoint data.
+ * Create a entity proxy to be used in tooltip for edge data, markLine data, markPoint data.
  * @param {module:echarts/data/List} data
  * @param {Object} opt
  * @param {string} [opt.seriesIndex]
@@ -8264,8 +8264,8 @@ function mappingToExists(exists, newCptOptions) {
     for (; i < result.length; i++) {
       var exist = result[i].exist;
 
-      if (!result[i].option // Existing model that already has id should be able to
-      // mapped to (because after mapping performed model may
+      if (!result[i].option // Existing entity that already has id should be able to
+      // mapped to (because after mapping performed entity may
       // be assigned with a id, whish should not affect next
       // mapping), except those has inner id.
       && !isIdInner(exist) // Caution:
@@ -8303,7 +8303,7 @@ function makeIdAndName(mapResult) {
   // in echarts. id can be specified by user, or auto generated.
   // The id generation rule ensures new view instance are able
   // to mapped to old instance when setOption are called in
-  // no-merge mode. So we generate model id by name and plus
+  // no-merge mode. So we generate entity id by name and plus
   // type in view id.
   // name can be duplicated among components, which is convenient
   // to specify multi components (like series) by one name.
@@ -8467,7 +8467,7 @@ var makeGetter = function () {
   };
 }();
 /**
- * @param {module:echarts/model/Global} ecModel
+ * @param {module:echarts/entity/Global} ecModel
  * @param {string|Object} finder
  *        If string, e.g., 'geo', means {geoIndex: 0}.
  *        If Object, could contain some of these properties below:
@@ -8495,9 +8495,9 @@ var makeGetter = function () {
  * @return {Object} result like:
  *        {
  *            seriesModels: [seriesModel1, seriesModel2],
- *            seriesModel: seriesModel1, // The first model
+ *            seriesModel: seriesModel1, // The first entity
  *            geoModels: [geoModel1, geoModel2],
- *            geoModel: geoModel1, // The first model
+ *            geoModel: geoModel1, // The first entity
  *            ...
  *        }
  */
@@ -8655,11 +8655,11 @@ var itemStyleMixin = __webpack_require__(76);
  */
 var mixin = zrUtil.mixin;
 /**
- * @alias module:echarts/model/Model
+ * @alias module:echarts/entity/Model
  * @constructor
  * @param {Object} option
  * @param {module:echarts/model/Model} [parentModel]
- * @param {module:echarts/model/Global} [ecModel]
+ * @param {module:echarts/entity/Global} [ecModel]
  */
 
 function Model(option, parentModel, ecModel) {
@@ -8749,7 +8749,7 @@ Model.prototype = {
   },
 
   /**
-   * If model has option
+   * If entity has option
    */
   isEmpty: function () {
     return this.option == null;
@@ -8775,7 +8775,7 @@ Model.prototype = {
   /**
    * @param {Function} getParentMethod
    *        param {Array.<string>|string} path
-   *        return {module:echarts/model/Model}
+   *        return {module:echarts/entity/Model}
    */
   customizeGetParent: function (getParentMethod) {
     clazzUtil.set(this, 'getParent', getParentMethod);
@@ -8952,7 +8952,7 @@ function superApply(context, methodName, args) {
 function enableClassManagement(entity, options) {
   options = options || {};
   /**
-   * Component model classes
+   * Component entity classes
    * key: componentType,
    * value:
    *     componentClass, when componentType is 'xxx'
@@ -9567,7 +9567,7 @@ function doSingleEnterHover(el) {
     //     }
     // },
     // where properties of `emphasis` may not appear in `normal`. We previously use
-    // module:echarts/util/model#defaultEmphasis to merge `normal` to `emphasis`.
+    // module:echarts/util/entity#defaultEmphasis to merge `normal` to `emphasis`.
     // But consider rich text and setOption in merge mode, it is impossible to cover
     // all properties in merge. So we use merge mode when setting style here, where
     // only properties that is not `null/undefined` can be set. The disadventage:
@@ -9773,8 +9773,8 @@ function setLabelStyle(normalStyle, emphasisStyle, normalModel, emphasisModel, o
 /**
  * Set basic textStyle properties.
  * @param {Object|module:zrender/graphic/Style} textStyle
- * @param {module:echarts/model/Model} model
- * @param {Object} [specifiedTextStyle] Can be overrided by settings in model.
+ * @param {module:echarts/model/Model} entity
+ * @param {Object} [specifiedTextStyle] Can be overrided by settings in entity.
  * @param {Object} [opt] See `opt` of `setTextStyleCommon`.
  * @param {boolean} [isEmphasis]
  */
@@ -10023,7 +10023,7 @@ function rollbackInsideStyle(style) {
 }
 
 function getFont(opt, ecModel) {
-  // ecModel or default text style model.
+  // ecModel or default text style entity.
   var gTextStyleModel = ecModel || ecModel.getModel('textStyle');
   return [// FIXME in node-canvas fontWeight is before fontStyle
   opt.fontStyle || gTextStyleModel && gTextStyleModel.getShallow('fontStyle') || '', opt.fontWeight || gTextStyleModel && gTextStyleModel.getShallow('fontWeight') || '', (opt.fontSize || gTextStyleModel && gTextStyleModel.getShallow('fontSize') || 12) + 'px', opt.fontFamily || gTextStyleModel && gTextStyleModel.getShallow('fontFamily') || 'sans-serif'].join(' ');
@@ -10034,8 +10034,8 @@ function animateOrSetProps(isUpdate, el, props, animatableModel, dataIndex, cb) 
     cb = dataIndex;
     dataIndex = null;
   } // Do not check 'animation' property directly here. Consider this case:
-  // animation model is an `itemModel`, whose does not have `isAnimationEnabled`
-  // but its parent model (`seriesModel`) does.
+  // animation entity is an `itemModel`, whose does not have `isAnimationEnabled`
+  // but its parent entity (`seriesModel`) does.
 
 
   var animationEnabled = animatableModel && animatableModel.isAnimationEnabled();

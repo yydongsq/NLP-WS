@@ -1,4 +1,4 @@
-package org.jeecg.modules.demo.mynlp.model;
+package org.jeecg.modules.demo.mynlp.entity;
 /**
  * @author sq
  * @create 2022-03-28-20:58
@@ -12,7 +12,7 @@ import java.util.Objects;
  * @author: ydy
  * @date: 2022年03月28日 20:58
  */
-public class ParticipleData {
+public class HanLPParticipleData {
     private String code;
     private ParticipleModel[] data;
 
@@ -44,7 +44,7 @@ public class ParticipleData {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ParticipleData that = (ParticipleData) o;
+        HanLPParticipleData that = (HanLPParticipleData) o;
         return Objects.equals(code, that.code) &&
                 Arrays.equals(data, that.data);
     }
