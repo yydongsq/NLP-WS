@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/mynlp/hanlp")
 @Slf4j
 public class HanLPParticipleController {
-    @GetMapping(value = "/hello")
+    @GetMapping(value = "/hanLPParticiple")
     public Result<String> hello(@RequestParam("type") String type) {
         HanLPParticipleCommon participle = new HanLPParticipleCommon();
-        String text="中国和美国都有自己的发展目标。中国坚持改革开放，科学发展，力争成为一个富裕强大文明的国家，造福于中国人民和世界人民，同时坚持独立自主外交，维护世界和平。";
+        String text="我也想过过过儿过过的生活";
         System.out.println(type);
         String hanLPParticiple = participle.getHanLPParticiple(text,type);
         log.info("HanLP分词结果集hanLPParticiple：" + hanLPParticiple);

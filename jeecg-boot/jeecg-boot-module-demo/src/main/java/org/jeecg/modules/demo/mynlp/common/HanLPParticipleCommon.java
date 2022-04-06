@@ -14,7 +14,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.jeecg.modules.demo.mynlp.entity.HanLPParticipleData;
-import org.jeecg.modules.demo.mynlp.entity.ParticipleModel;
+import org.jeecg.modules.demo.mynlp.entity.HanLPParticipleModel;
 
 
 import java.io.IOException;
@@ -30,13 +30,20 @@ import java.util.Map;
  * @date: 2022年03月28日 20:51
  */
 public class HanLPParticipleCommon {
+
+    /**
+     * 对分词后的数据进行词性筛选
+     * @param text
+     * @return
+     */
     public String getHanLPParticipleNS(String text){
         //Map<String, ParticipleModel> personMap = new HashMap<>();
         Gson gson = new Gson();
+        //将json字符串转换为实体类对象
         HanLPParticipleData participleData = gson.fromJson(text, HanLPParticipleData.class);
-        System.out.println(participleData);
-        ParticipleModel[] data = participleData.getData();
-        ArrayList<ParticipleModel> list = new ArrayList();
+        //获取分词后的data数据部分
+        HanLPParticipleModel[] data = participleData.getData();
+        ArrayList<HanLPParticipleModel> list = new ArrayList();
         for (int i = 0; i < data.length; i++) {
             if(data[i].getNature().equals("n") || data[i].getNature().equals("ns")){
                 list.add(data[i]);
@@ -46,7 +53,7 @@ public class HanLPParticipleCommon {
         participleData_result.setCode("0");
         //java中的强制类型转换只是针对单个对象的，想要偷懒将整个数组转换成另外一种类型的数组是不行的，这和数组初始化时需要一个个来也是类似的。
         //ParticipleModel[]  da = (ParticipleModel[])list.toArray();
-        ParticipleModel[] participleModels = list.toArray(new ParticipleModel[list.size()]);
+        HanLPParticipleModel[] participleModels = list.toArray(new HanLPParticipleModel[list.size()]);
         participleData_result.setData(participleModels);
         String participleJsonString = gson.toJson(participleData_result);
         return participleJsonString;

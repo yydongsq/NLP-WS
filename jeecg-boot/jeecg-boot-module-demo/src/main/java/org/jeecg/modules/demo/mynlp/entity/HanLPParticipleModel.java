@@ -1,10 +1,14 @@
 package org.jeecg.modules.demo.mynlp.entity;
+
+
+import lombok.Data;
+
+import java.util.Objects;
+
 /**
  * @author sq
  * @create 2022-03-28-20:58
  */
-
-import lombok.Data;
 
 /**
  * @Description: TODO
@@ -12,7 +16,7 @@ import lombok.Data;
  * @date: 2022年03月28日 20:58
  */
 @Data
-public class HanLPParticipleData {
-    private String code;
-    private HanLPParticipleModel[] data;
+public class HanLPParticipleModel {
+    private String nature;
+    private String word;
 }

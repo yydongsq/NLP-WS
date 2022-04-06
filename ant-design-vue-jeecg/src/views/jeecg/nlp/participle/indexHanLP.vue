@@ -101,7 +101,7 @@
           getMonthCountInfo:"/mock/api/report/getMonthCountInfo",
           getCntrNoCountInfo:"/mock/api/report/getCntrNoCountInfo",
           getCabinetCountInfo:"/mock/api/report/getCabinetCountInfo",
-          getParticiple:"/jeecg-demo/mynlp/thulac/hello",
+          getParticiple:"/jeecg-demo/mynlp/hanlp/hanLPParticiple",
         },
       }
     },
