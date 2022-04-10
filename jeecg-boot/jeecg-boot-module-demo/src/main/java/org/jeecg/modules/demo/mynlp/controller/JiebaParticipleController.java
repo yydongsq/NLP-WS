@@ -26,10 +26,10 @@ public class JiebaParticipleController {
         JiebaParticipleCommon participle = new JiebaParticipleCommon();
         String text="我也想过过过儿过过的生活";
         System.out.println(type);
-        String thulacParticiple = participle.getThulacParticiple(text,type);
-        log.info("Thulac分词结果集thulacParticiple：" + thulacParticiple);
+        String jiebaParticiple = participle.getJiebaParticiple(text,type);
+        log.info("Jieba分词结果集jiebaParticiple：" + jiebaParticiple);
         Result<String> result = new Result<String>();
-        result.setResult(thulacParticiple);
+        result.setResult(jiebaParticiple);
         result.setSuccess(true);
         return result;
     }

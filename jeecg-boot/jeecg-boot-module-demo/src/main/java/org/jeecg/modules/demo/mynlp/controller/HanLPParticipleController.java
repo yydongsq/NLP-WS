@@ -25,7 +25,7 @@ public class HanLPParticipleController {
         HanLPParticipleCommon participle = new HanLPParticipleCommon();
         String text="我也想过过过儿过过的生活";
         System.out.println(type);
-        String hanLPParticiple = participle.getHanLPParticiple(text,type);
+        String hanLPParticiple = participle.getHanLPParticipleByMyAPI(text,type);
         log.info("HanLP分词结果集hanLPParticiple：" + hanLPParticiple);
         Result<String> result = new Result<String>();
         result.setResult(hanLPParticiple);

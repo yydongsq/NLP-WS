@@ -27,7 +27,7 @@ import java.util.Map;
  * @date: 2022年04月06日 16:15
  */
 public class JiebaParticipleCommon {
-    public String getThulacParticiple(String text,String type){
+    public String getJiebaParticiple(String text,String type){
         //封装Thulac模型的Flask RestFull API接口地址
         String url="http://127.0.0.1:5000/jieba/sentence";
         Map<String,Object> params=new HashMap<String,Object>();

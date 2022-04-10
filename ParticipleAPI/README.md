@@ -62,9 +62,41 @@ from ltp import LTP
 ltp = LTP() # 默认加载 Small 模型
 ```
 
-**防止调用jieba时出现异常：**No module named 'cv2' 
+**LSTM-CRF：**
+
+```shell
+pip install tensorflow
+```
+
+**导入HanLP分词工具：**
+
+```shell
+pip install hanlp -U
+```
+
+## 4. 异常处理
+
+**异常：**No module named 'cv2' 
+
+**处理：**
 
 ```shell
 pip install opencv-python
 ```
 
+**异常：** "xrange" is not defined 
+
+**解决：** 在Python3中，range()与xrange()合并为range( )，  将xrange( )函数全部换为range( )。 
+
+**异常：** module 'tensorflow' has no attribute 'contrib' 
+
+**解决：**
+
+```shell
+ pip install tensorflow==1.15.0 
+```
+
+**异常：**  The flag 'log_dir' is defined twice.  
+
+**解决：**这是tensorflow1.14版本问题，tf1.14本身就定义了**logging**，不需要二次定义。
+报错显示**Second from train.py**，只需要在train.py中找到对应的log定义代码，删掉就好。 
