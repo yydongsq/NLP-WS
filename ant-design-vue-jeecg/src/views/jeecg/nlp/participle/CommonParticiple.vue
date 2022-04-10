@@ -5,29 +5,10 @@
         <a-row>
           <a-col :span="10">
             <a-radio-group :value="barType" @change="statisticst">
-              <!--              <a-radio-button value="year">按年统计</a-radio-button>
-                            <a-radio-button value="month">按月统计</a-radio-button>
-                            <a-radio-button value="category">按类别统计</a-radio-button>
-                            <a-radio-button value="cabinet">按柜号统计</a-radio-button>-->
-              <a-radio-button value="participle">分词展示</a-radio-button>
+              <a-radio-button value="participle">分词结果</a-radio-button>
               <a-radio-button value="participle_n">关键字统计</a-radio-button>
             </a-radio-group>
           </a-col>
-          <a-col :span="14">
-            <a-form v-if="barType === 'month' && false" layout="inline" style="margin-top: -4px">
-              <a-form-item label="月份区间">
-                <a-range-picker
-                  :placeholder="['开始月份', '结束月份']"
-                  format="YYYY-MM"
-                  :value="barValue"
-                  :mode="barDate"
-                  @panelChange="handleBarDate"/>
-              </a-form-item>
-              <a-button style="margin-top: 2px" type="primary" icon="search" @click="queryDatebar">查询</a-button>
-              <a-button style="margin-top: 2px;margin-left: 8px" type="primary" icon="reload" @click="searchReset">重置</a-button>
-            </a-form>
-          </a-col>
-          <bar class="statistic" title="档案统计" :dataSource="countSource" :height="400"/>
         </a-row>
       </a-tab-pane>
 
@@ -35,31 +16,10 @@
         <a-row :gutter="24">
           <a-col :span="8">
             <a-radio-group :value="pieType" @change="statisticst">
-              <!--              <a-radio-button value="year">按年统计</a-radio-button>
-                            <a-radio-button value="month">按月统计</a-radio-button>
-                            <a-radio-button value="category">按类别统计</a-radio-button>
-                            <a-radio-button value="cabinet">按柜号统计</a-radio-button>-->
-              <a-radio-button value="participle">分词展示</a-radio-button>
+              <a-radio-button value="participle">分词结果</a-radio-button>
               <a-radio-button value="participle_n">关键字统计</a-radio-button>
             </a-radio-group>
           </a-col>
-          <a-col :span="14">
-            <a-form v-if="pieType === 'month' && false" layout="inline" style="margin-top: -4px">
-              <a-row :gutter="24">
-                <a-form-item label="月份区间">
-                  <a-range-picker
-                    :placeholder="['开始月份', '结束月份']"
-                    format="YYYY-MM"
-                    :value="pieValue"
-                    :mode="pieDate"
-                    @panelChange="handlePieDate"/>
-                </a-form-item>
-                <a-button style="margin-top: 2px" type="primary" icon="search" @click="queryDatepie">查询</a-button>
-                <a-button style="margin-top: 2px;margin-left: 8px" type="primary" icon="reload" @click="searchReset">重置</a-button>
-              </a-row>
-            </a-form>
-          </a-col>
-          <pie class="statistic" title="档案统计" :dataSource="countSource" :height="450"/>
         </a-row>
       </a-tab-pane>
     </a-tabs>
@@ -73,7 +33,9 @@
   import { getAction } from '@/api/manage'
 
   export default {
-    name: 'ArchivesStatisticst',
+    name: 'CommonParticiple',
+    //接收父组件传来的addDialogVisible
+    props:['ShowModel'],
     components: {
       ACol,
       Bar,
@@ -101,16 +63,18 @@
           getMonthCountInfo:"/mock/api/report/getMonthCountInfo",
           getCntrNoCountInfo:"/mock/api/report/getCntrNoCountInfo",
           getCabinetCountInfo:"/mock/api/report/getCabinetCountInfo",
-          getParticiple:"/jeecg-demo/mynlp/ltp/ltpParticiple",
+          getParticiple:"/jeecg-demo/mynlp/hanlp/hanLPParticiple",
         },
       }
     },
     created() {
+      alert("prop1  " + this.ShowModel);
       let url = this.url.getParticiple;
       this.loadDate(url,'participle',{type:"get_all"});
     },
     methods: {
       loadDate(url,type,param) {
+        alert("prop2  " + this.ShowModel);
         getAction(url,param,'get').then((res) => {
           console.info("res.success = " + res.success);
           if (res.success) {

@@ -5,11 +5,7 @@
         <a-row>
           <a-col :span="10">
             <a-radio-group :value="barType" @change="statisticst">
-              <!--              <a-radio-button value="year">按年统计</a-radio-button>
-                            <a-radio-button value="month">按月统计</a-radio-button>
-                            <a-radio-button value="category">按类别统计</a-radio-button>
-                            <a-radio-button value="cabinet">按柜号统计</a-radio-button>-->
-              <a-radio-button value="participle">分词展示</a-radio-button>
+              <a-radio-button value="participle">分词结果</a-radio-button>
               <a-radio-button value="participle_n">关键字统计</a-radio-button>
             </a-radio-group>
           </a-col>
@@ -35,11 +31,7 @@
         <a-row :gutter="24">
           <a-col :span="8">
             <a-radio-group :value="pieType" @change="statisticst">
-              <!--              <a-radio-button value="year">按年统计</a-radio-button>
-                            <a-radio-button value="month">按月统计</a-radio-button>
-                            <a-radio-button value="category">按类别统计</a-radio-button>
-                            <a-radio-button value="cabinet">按柜号统计</a-radio-button>-->
-              <a-radio-button value="participle">分词展示</a-radio-button>
+              <a-radio-button value="participle">分词结果</a-radio-button>
               <a-radio-button value="participle_n">关键字统计</a-radio-button>
             </a-radio-group>
           </a-col>
@@ -73,7 +65,7 @@
   import { getAction } from '@/api/manage'
 
   export default {
-    name: 'ArchivesStatisticst',
+    name: 'IndexJieba',
     components: {
       ACol,
       Bar,

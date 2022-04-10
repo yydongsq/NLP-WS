@@ -25,12 +25,12 @@ def select_participletype_byThulac(text,participle_type):
     if participle_type == "sentence":
         thun = thulac.thulac()   #默认模式
         result = thun.cut(text,text = False) #进行一句话分词,text = False是否返回文本，不返回文本则返回一个二维数组
-        print("调用cut成功...........")
+        print("----------调用Thulac成功----------")
         return result
     else:
         thun = thulac.thulac()  #如增加参数seg_only=True只进行分词，不进行词性标注
         thun.cut_f("input.txt", "output.txt")  #对input.txt文件内容进行分词，输出到output.txt
-        print("调用cut_f成功..........")
+        print("----------调用Thulac成功----------")
         return '已输出'   
 
 #自定义响应格式
@@ -47,6 +47,7 @@ def select_participletype_byJieba(text,participle_type):
             t[i] = s
             i = i + 1
         result = jsonify(t) #转换为json字符串
+        print("----------调用Jieba成功----------")
         return result
     else:
         return ''     
@@ -64,6 +65,7 @@ def select_participletype_byLtp(text,participle_type):
         t[0] = seg.pop()
         t[1] = pos.pop()
         result = jsonify(t) #转换为json字符串
+        print("----------调用Ltp成功----------")
         return result
     else:
         return ''
@@ -81,6 +83,7 @@ def select_participletype_byHanLP(text,participle_type):
         #执行所有标准的词性标注（pos：默认执行ctb标准；pos/pku：执行PKU词性标注；pos/ctb：执行CTB词性标注；pos/863：执行863词性标注；pos/*：执行所有标准）
         #以pos开头的字段为词性，以tok开头的第一个数组为单词，两者按下标一一对应。      
         result = HanLPUtil([text], tasks='pos/pku')
+        print("----------调用HanLP成功----------")
         return result
     else:
         return ''
