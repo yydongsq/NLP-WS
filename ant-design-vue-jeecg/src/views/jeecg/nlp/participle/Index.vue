@@ -10,7 +10,7 @@
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="模型名称">
-              <a-select placeholder="请选择模型名称" v-model="ShowModel">
+              <a-select placeholder="请选择模型名称" v-model="ModelName">
                 <a-select-option value="HanLP">HanLP</a-select-option>
                 <a-select-option value="Jieba">Jieba</a-select-option>
                 <a-select-option value="LTP">LTP</a-select-option>
@@ -27,11 +27,7 @@
         </a-row>
       </a-form>
 
-<!--      <IndexHanLP v-show="ShowModel == 'HanLP'"></IndexHanLP>
-      <IndexJieba v-show="ShowModel == 'Jieba'"></IndexJieba>
-      <IndexLtp v-show="ShowModel == 'Ltp'"></IndexLtp>
-      <IndexThulac v-show="ShowModel == 'Thulac'"></IndexThulac>-->
-      <CommonParticiple v-bind:ShowModel = "ShowModel"></CommonParticiple>
+      <IndexAll :ShowModel = "ShowModel"></IndexAll>
     </div>
     <!-- 查询区域-END -->
 
@@ -40,11 +36,11 @@
 
 <script>
 
-  import CommonParticiple from './CommonParticiple.vue'
+  import IndexAll from './IndexAll.vue'
     export default {
         name: "Index",
         components: {
-          CommonParticiple
+          IndexAll
         },
       data(){
         return{
@@ -59,7 +55,9 @@
           this.ShowModel = modelName;
         },
         searchReset(){
-
+          this.TypeName = undefined;
+          this.ModelName = undefined;
+          //this.ShowModel = "reload";
         }
       }
     }

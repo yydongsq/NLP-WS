@@ -9,20 +9,6 @@
               <a-radio-button value="participle_n">关键字统计</a-radio-button>
             </a-radio-group>
           </a-col>
-          <a-col :span="14">
-            <a-form v-if="barType === 'month' && false" layout="inline" style="margin-top: -4px">
-              <a-form-item label="月份区间">
-                <a-range-picker
-                  :placeholder="['开始月份', '结束月份']"
-                  format="YYYY-MM"
-                  :value="barValue"
-                  :mode="barDate"
-                  @panelChange="handleBarDate"/>
-              </a-form-item>
-              <a-button style="margin-top: 2px" type="primary" icon="search" @click="queryDatebar">查询</a-button>
-              <a-button style="margin-top: 2px;margin-left: 8px" type="primary" icon="reload" @click="searchReset">重置</a-button>
-            </a-form>
-          </a-col>
           <bar class="statistic" title="档案统计" :dataSource="countSource" :height="400"/>
         </a-row>
       </a-tab-pane>
@@ -34,22 +20,6 @@
               <a-radio-button value="participle">分词结果</a-radio-button>
               <a-radio-button value="participle_n">关键字统计</a-radio-button>
             </a-radio-group>
-          </a-col>
-          <a-col :span="14">
-            <a-form v-if="pieType === 'month' && false" layout="inline" style="margin-top: -4px">
-              <a-row :gutter="24">
-                <a-form-item label="月份区间">
-                  <a-range-picker
-                    :placeholder="['开始月份', '结束月份']"
-                    format="YYYY-MM"
-                    :value="pieValue"
-                    :mode="pieDate"
-                    @panelChange="handlePieDate"/>
-                </a-form-item>
-                <a-button style="margin-top: 2px" type="primary" icon="search" @click="queryDatepie">查询</a-button>
-                <a-button style="margin-top: 2px;margin-left: 8px" type="primary" icon="reload" @click="searchReset">重置</a-button>
-              </a-row>
-            </a-form>
           </a-col>
           <pie class="statistic" title="档案统计" :dataSource="countSource" :height="450"/>
         </a-row>

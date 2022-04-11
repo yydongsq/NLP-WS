@@ -5,10 +5,11 @@
         <a-row>
           <a-col :span="10">
             <a-radio-group :value="barType" @change="statisticst">
-              <a-radio-button value="participle">分词结果</a-radio-button>
+              <a-radio-button value="participle">{{ShowModel}}分词结果</a-radio-button>
               <a-radio-button value="participle_n">关键字统计</a-radio-button>
             </a-radio-group>
           </a-col>
+          <bar class="statistic" title="档案统计" :dataSource="countSource" :height="400"/>
         </a-row>
       </a-tab-pane>
 
@@ -16,10 +17,11 @@
         <a-row :gutter="24">
           <a-col :span="8">
             <a-radio-group :value="pieType" @change="statisticst">
-              <a-radio-button value="participle">分词结果</a-radio-button>
+              <a-radio-button value="participle">{{ShowModel}}分词结果</a-radio-button>
               <a-radio-button value="participle_n">关键字统计</a-radio-button>
             </a-radio-group>
           </a-col>
+          <pie class="statistic" title="档案统计" :dataSource="countSource" :height="450"/>
         </a-row>
       </a-tab-pane>
     </a-tabs>
@@ -33,9 +35,12 @@
   import { getAction } from '@/api/manage'
 
   export default {
-    name: 'CommonParticiple',
-    //接收父组件传来的addDialogVisible
-    props:['ShowModel'],
+    name: 'IndexAll',
+    //接收父组件传来的属性
+    //props:['ShowModel'],
+    props: {
+      ShowModel: Object
+    },
     components: {
       ACol,
       Bar,
@@ -63,18 +68,20 @@
           getMonthCountInfo:"/mock/api/report/getMonthCountInfo",
           getCntrNoCountInfo:"/mock/api/report/getCntrNoCountInfo",
           getCabinetCountInfo:"/mock/api/report/getCabinetCountInfo",
-          getParticiple:"/jeecg-demo/mynlp/hanlp/hanLPParticiple",
+          getHanLPParticiple:"/jeecg-demo/mynlp/hanlp/hanLPParticiple",
+          getJiebaParticiple:"/jeecg-demo/mynlp/jieba/jiebaParticiple",
+          getLtpParticiple:"/jeecg-demo/mynlp/ltp/ltpParticiple",
+          getThulacParticiple:"/jeecg-demo/mynlp/thulac/thulacParticiple",
         },
+        initShow:"",
       }
     },
     created() {
-      alert("prop1  " + this.ShowModel);
-      let url = this.url.getParticiple;
-      this.loadDate(url,'participle',{type:"get_all"});
+      //let url = this.url.getParticiple;
+      //this.loadDate(url,'participle',{type:"get_all"});
     },
     methods: {
       loadDate(url,type,param) {
-        alert("prop2  " + this.ShowModel);
         getAction(url,param,'get').then((res) => {
           console.info("res.success = " + res.success);
           if (res.success) {
@@ -106,36 +113,6 @@
             that.$message.warning(res.message);
           }
         })
-      },
-      getYearCountSource(data){
-        for (let i = 0; i < data.length; i++) {
-          if(this.tabStatus === "bar"){
-            this.countSource.push({
-              x: `${data[i].year}年`,
-              y: data[i].yearcount
-            })
-          }else{
-            this.countSource.push({
-              item: `${data[i].year}年`,
-              count:data[i].yearcount
-            })
-          }
-        }
-      },
-      getMonthCountSource(data){
-        for (let i = 0; i < data.length; i++) {
-          if(this.tabStatus === "bar"){
-            this.countSource.push({
-              x: data[i].month,
-              y: data[i].monthcount
-            })
-          }else{
-            this.countSource.push({
-              item: data[i].month,
-              count:data[i].monthcount
-            })
-          }
-        }
       },
       getCategoryCountSource(data){
         for (let i = 0; i < data.length; i++) {
@@ -202,7 +179,6 @@
           this.queryDatebar();
         }
       },
-      // 按月份查询
       queryDatebar(){
         if(this.barValue.length>0){
           this.getUrl(this.barType,{startTime:this.barValue[0]._d,endTime:this.barValue[1]._d});
@@ -228,22 +204,24 @@
       },
       // 选择请求url
       getUrl(type,param){
+        let showModel = this.ShowModel;
         let url = "";
-        if(type === 'year'){
-          url = this.url.getYearCountInfo;
-        }
-        if(type === 'month'){
-          url = this.url.getMonthCountInfo;
-        }
-        if(type === 'category'){
-          url = this.url.getCntrNoCountInfo;
-        }
-        if(type === 'cabinet'){
-          url = this.url.getCabinetCountInfo;
-        }
-        if(type === 'participle'){
+        //type为分词类型
+        if(type === 'participle' && showModel === "HanLP"){
           param = {type:"get_all"};
-          url = this.url.getParticiple;
+          url = this.url.getHanLPParticiple;
+        }
+        if(type === 'participle' && showModel === "Thulac"){
+          param = {type:"get_all"};
+          url = this.url.getThulacParticiple;
+        }
+        if(type === 'participle' && showModel === "Jieba"){
+          param = {type:"get_all"};
+          url = this.url.getJiebaParticiple;
+        }
+        if(type === 'participle' && showModel === "LTP"){
+          param = {type:"get_all"};
+          url = this.url.getLtpParticiple;
         }
         if(type === 'participle_n'){
           param = {type:"get_n"};
@@ -251,21 +229,21 @@
         }
         this.loadDate(url,type,param);
       },
-      // 选择月份日期
-      handleBarDate(value, mode) {
-        this.barValue = value
-        this.barDate = [
-          mode[0] === 'date' ? 'month' : mode[0],
-          mode[1] === 'date' ? 'month' : mode[1]
-        ]
-      },
-      handlePieDate(value, mode) {
-        this.pieValue = value
-        this.pieDate = [
-          mode[0] === 'date' ? 'month' : mode[0],
-          mode[1] === 'date' ? 'month' : mode[1]
-        ]
-      },
+    },
+    watch:{
+      //正常写法
+      ShowModel:{
+        immediate:true, //初始化时让handler调用一下
+        deep:true,//深度监视
+        handler(newValue,oldValue){
+          if(newValue === "reload"){
+            this.getUrl("",{});
+          }else{
+            this.getUrl("participle",{});
+          }
+          console.log('isHot被修改了',newValue,oldValue)
+        }
+      }
     }
   }
 </script>
