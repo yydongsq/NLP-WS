@@ -9,7 +9,7 @@
               <a-radio-button value="participle_n">关键字统计</a-radio-button>
             </a-radio-group>
           </a-col>
-          <bar class="statistic" title="档案统计" :dataSource="countSource" :height="400"/>
+          <bar class="statistic" title="档案统计" :dataSource="countSource" :height="400" loading={this.loding} />
         </a-row>
       </a-tab-pane>
 
@@ -33,13 +33,15 @@
   import Pie from '@/components/chart/Pie'
   import ACol from 'ant-design-vue/es/grid/Col'
   import { getAction } from '@/api/manage'
+  import { message, Button } from 'ant-design-vue';
 
   export default {
     name: 'IndexAll',
     //接收父组件传来的属性
     //props:['ShowModel'],
     props: {
-      ShowModel: Object
+      ShowModel: Object,
+      DataSet: Object
     },
     components: {
       ACol,
@@ -82,7 +84,10 @@
     },
     methods: {
       loadDate(url,type,param) {
+        const loding = message.loading('正在加载模型进行分词，请稍后...',0);
         getAction(url,param,'get').then((res) => {
+          loding();
+          message.success('模型加载成功！');
           console.info("res.success = " + res.success);
           if (res.success) {
             console.info(res);
@@ -205,35 +210,51 @@
       // 选择请求url
       getUrl(type,param){
         let showModel = this.ShowModel;
+        let dataSet = this.DataSet;
         let url = "";
         //type为分词类型
         if(type === 'participle' && showModel === "HanLP"){
-          param = {type:"get_all"};
+          param = {
+            type:"get_all",
+            dataSet: dataSet,
+          };
           url = this.url.getHanLPParticiple;
         }
         if(type === 'participle' && showModel === "Thulac"){
-          param = {type:"get_all"};
+          param = {
+            type:"get_all",
+            dataSet: dataSet,
+          };
           url = this.url.getThulacParticiple;
         }
         if(type === 'participle' && showModel === "Jieba"){
-          param = {type:"get_all"};
+          param = {
+            type:"get_all",
+            dataSet: dataSet,
+          };
           url = this.url.getJiebaParticiple;
         }
         if(type === 'participle' && showModel === "LTP"){
-          param = {type:"get_all"};
+          param = {
+            type:"get_all",
+            dataSet: dataSet,
+          };
           url = this.url.getLtpParticiple;
         }
         if(type === 'participle_n'){
-          param = {type:"get_n"};
+          param = {
+            type:"get_all",
+            dataSet: dataSet,
+          };
           url = this.url.getParticiple;
         }
-        this.loadDate(url,type,param);
+        this.loadDate(url,type,param,dataSet);
       },
     },
     watch:{
-      //正常写法
+      //将ShowModel作为监事属性
       ShowModel:{
-        immediate:true, //初始化时让handler调用一下
+        //immediate:true, //初始化时让handler调用一下
         deep:true,//深度监视
         handler(newValue,oldValue){
           if(newValue === "reload"){
@@ -241,7 +262,18 @@
           }else{
             this.getUrl("participle",{});
           }
-          console.log('isHot被修改了',newValue,oldValue)
+        }
+      },
+      //将DataSet作为监事属性
+      DataSet:{
+        //immediate:true, //初始化时让handler调用一下
+        deep:true,//深度监视
+        handler(newValue,oldValue){
+          if(newValue === "reload"){
+            this.getUrl("",{});
+          }else{
+            this.getUrl("participle",{});
+          }
         }
       }
     }

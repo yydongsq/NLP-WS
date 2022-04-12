@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ThulacParticipleController {
     @GetMapping(value = "/thulacParticiple")
-    public Result<String> hello(@RequestParam("type") String type) {
+    public Result<String> hello(@RequestParam("type") String type,@RequestParam("dataSet") String dataSet) {
         ThulacParticipleCommon participle = new ThulacParticipleCommon();
-        String text="我也想过过过儿过过的生活";
+        String text = dataSet;
         System.out.println(type);
         String thulacParticiple = participle.getThulacParticiple(text,type);
         log.info("Thulac分词结果集thulacParticiple：" + thulacParticiple);

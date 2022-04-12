@@ -1,16 +1,29 @@
 <template>
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
-      <a-form layout="inline" @keyup.enter.native="searchQuery">
+      <a-form layout="inline" @keyup.enter.native="searchQuery" :form="form">
         <a-row :gutter="24">
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="数据集内容">
-              <a-input placeholder="请输入数据集内容" v-model="TypeName"></a-input>
+              <a-input
+                v-decorator="[
+                'DataContent', // 给表单赋值或拉取表单时，该input对应的key
+                {rules: [{ required: true, message: '请输入数据集内容!' }]}
+                ]"
+                placeholder="请输入数据集内容"
+                v-model="DataContent">
+              </a-input>
             </a-form-item>
           </a-col>
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <a-form-item label="模型名称">
-              <a-select placeholder="请选择模型名称" v-model="ModelName">
+              <a-select
+                v-decorator="[
+                'ModelName', // 给表单赋值或拉取表单时，该input对应的key
+                {rules: [{ required: true, message: '请选择模型名称!' }]}
+                ]"
+                placeholder="请选择模型名称"
+                v-model="ModelName">
                 <a-select-option value="HanLP">HanLP</a-select-option>
                 <a-select-option value="Jieba">Jieba</a-select-option>
                 <a-select-option value="LTP">LTP</a-select-option>
@@ -27,11 +40,9 @@
         </a-row>
       </a-form>
 
-      <IndexAll :ShowModel = "ShowModel"></IndexAll>
+      <IndexAll :ShowModel = "ShowModel" :DataSet = "DataSet"></IndexAll>
     </div>
     <!-- 查询区域-END -->
-
-
 </template>
 
 <script>
@@ -44,20 +55,34 @@
         },
       data(){
         return{
-          TypeName: '',
+          DataContent: undefined,
           ModelName: undefined,
-          ShowModel:''
-          }
+          DataSet: '',
+          ShowModel:'',
+          form: this.$form.createForm(this), // 只有这样注册后，才能通过表单拉取数据
+        }
       },
       methods: {
         searchQuery(){
-          let modelName = this.ModelName;
-          this.ShowModel = modelName;
+          //通过validateFields的方法，能够校验必填项是否有值，若无，则页面会给出警告！
+          this.form.validateFields((err, values) => {
+            //判断必填项校验是否通过
+            if (!err) {
+              this.ShowModel = this.ModelName;
+              this.DataSet = this.DataContent;
+              console.log(values)
+            }
+          })
         },
+        //将输入框置为空
         searchReset(){
-          this.TypeName = undefined;
+          this.DataContent = undefined;
           this.ModelName = undefined;
-          //this.ShowModel = "reload";
+          //加入v-decorator后无法使用v-model进行双向数据绑定，通过 setFieldsValue() 方法进行数据改变
+          this.form.setFieldsValue({
+            DataContent: undefined,
+            ModelName: undefined
+          })
         }
       }
     }

@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class HanLPParticipleController {
     @GetMapping(value = "/hanLPParticiple")
-    public Result<String> hello(@RequestParam("type") String type) {
+    public Result<String> hello(@RequestParam("type") String type,@RequestParam("dataSet") String dataSet) {
         HanLPParticipleCommon participle = new HanLPParticipleCommon();
-        String text="我也想过过过儿过过的生活";
+        String text = dataSet;
         System.out.println(type);
         String hanLPParticiple = participle.getHanLPParticipleByMyAPI(text,type);
         log.info("HanLP分词结果集hanLPParticiple：" + hanLPParticiple);

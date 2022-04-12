@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class JiebaParticipleController {
     @GetMapping(value = "/jiebaParticiple")
-    public Result<String> hello(@RequestParam("type") String type) {
+    public Result<String> hello(@RequestParam("type") String type,@RequestParam("dataSet") String dataSet) {
         JiebaParticipleCommon participle = new JiebaParticipleCommon();
-        String text="我也想过过过儿过过的生活";
+        String text = dataSet;
         System.out.println(type);
         String jiebaParticiple = participle.getJiebaParticiple(text,type);
         log.info("Jieba分词结果集jiebaParticiple：" + jiebaParticiple);
