@@ -6,6 +6,7 @@ package org.jeecg.modules.demo.mynlp.common;/**
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.google.gson.Gson;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -26,6 +27,7 @@ import java.util.Map;
  * @author: ydy
  * @date: 2022年04月06日 16:15
  */
+@Slf4j
 public class JiebaParticipleCommon {
     public String getJiebaParticiple(String text,String type){
         //封装Thulac模型的Flask RestFull API接口地址
@@ -87,6 +89,7 @@ public class JiebaParticipleCommon {
             resultString = EntityUtils.toString(response.getEntity(),"utf-8");
             return resultString;
         } catch (Exception e) {
+            log.info("-----------------------调用Jieba模型失败---------------------");
             e.printStackTrace();
         }
         finally {

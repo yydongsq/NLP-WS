@@ -39,14 +39,11 @@
           </a-col>
         </a-row>
       </a-form>
-
       <IndexAll :ShowModel = "ShowModel" :DataSet = "DataSet"></IndexAll>
     </div>
     <!-- 查询区域-END -->
 </template>
-
 <script>
-
   import IndexAll from './IndexAll.vue'
     export default {
         name: "Index",
@@ -87,7 +84,6 @@
       }
     }
 </script>
-
 <style scoped>
 
 </style>

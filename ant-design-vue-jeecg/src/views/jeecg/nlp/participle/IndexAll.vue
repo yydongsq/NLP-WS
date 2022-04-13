@@ -5,11 +5,11 @@
         <a-row>
           <a-col :span="10">
             <a-radio-group :value="barType" @change="statisticst">
-              <a-radio-button value="participle">{{ShowModel}}分词结果</a-radio-button>
+              <a-radio-button value="participle">{{ShowReloadModel}}分词结果</a-radio-button>
               <a-radio-button value="participle_n">关键字统计</a-radio-button>
             </a-radio-group>
           </a-col>
-          <bar class="statistic" title="档案统计" :dataSource="countSource" :height="400" loading={this.loding} />
+          <bar class="statistic" title="分词统计" :dataSource="countSource" :height="400" loading={this.loding} />
         </a-row>
       </a-tab-pane>
 
@@ -17,11 +17,11 @@
         <a-row :gutter="24">
           <a-col :span="8">
             <a-radio-group :value="pieType" @change="statisticst">
-              <a-radio-button value="participle">{{ShowModel}}分词结果</a-radio-button>
+              <a-radio-button value="participle">{{ShowReloadModel}}分词结果</a-radio-button>
               <a-radio-button value="participle_n">关键字统计</a-radio-button>
             </a-radio-group>
           </a-col>
-          <pie class="statistic" title="档案统计" :dataSource="countSource" :height="450"/>
+          <pie class="statistic" title="分词统计" :dataSource="countSource" :height="450"/>
         </a-row>
       </a-tab-pane>
     </a-tabs>
@@ -65,6 +65,8 @@
         pieValue: [],
         // 统计图类型
         tabStatus:"bar",
+        ShowReloadModel: '',
+        ShowModelUpdate: false,
         url: {
           getYearCountInfo: "/mock/api/report/getYearCountInfo",
           getMonthCountInfo:"/mock/api/report/getMonthCountInfo",
@@ -88,6 +90,7 @@
         getAction(url,param,'get').then((res) => {
           loding();
           message.success('模型加载成功！');
+          this.ShowReloadModel = this.ShowModel;
           console.info("res.success = " + res.success);
           if (res.success) {
             console.info(res);
@@ -241,14 +244,16 @@
           };
           url = this.url.getLtpParticiple;
         }
-        if(type === 'participle_n'){
+        if(type === 'participle_n' && showModel === "HanLP"){
           param = {
             type:"get_all",
             dataSet: dataSet,
           };
           url = this.url.getParticiple;
         }
-        this.loadDate(url,type,param,dataSet);
+        if(url !== ""){
+          this.loadDate(url,type,param,dataSet);
+        }
       },
     },
     watch:{
@@ -257,11 +262,8 @@
         //immediate:true, //初始化时让handler调用一下
         deep:true,//深度监视
         handler(newValue,oldValue){
-          if(newValue === "reload"){
-            this.getUrl("",{});
-          }else{
-            this.getUrl("participle",{});
-          }
+          this.showModelUpdate = true;
+          this.getUrl("participle",{});
         }
       },
       //将DataSet作为监事属性
@@ -269,10 +271,12 @@
         //immediate:true, //初始化时让handler调用一下
         deep:true,//深度监视
         handler(newValue,oldValue){
-          if(newValue === "reload"){
-            this.getUrl("",{});
-          }else{
+          //解决数据集和模型同时改变时重复调用gatUrl方法
+          if(this.showModelUpdate === false){
             this.getUrl("participle",{});
+          }else{
+            //解决数据集改变而模型不改变时不调用gatUrl方法
+            this.showModelUpdate = false;
           }
         }
       }

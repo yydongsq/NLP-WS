@@ -4,6 +4,7 @@ package org.jeecg.modules.demo.mynlp.common;/**
  */
 
 import com.google.gson.Gson;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -27,6 +28,7 @@ import java.util.Map;
  * @author: ydy
  * @date: 2022年04月06日 20:37
  */
+@Slf4j
 public class LtpParticipleCommon {
     public String getLtpParticiple(String text,String type){
         //封装Ltp模型的Flask RestFull API接口地址
@@ -89,6 +91,7 @@ public class LtpParticipleCommon {
             resultString = EntityUtils.toString(response.getEntity(),"utf-8");
             return resultString;
         } catch (Exception e) {
+            log.info("-----------------------调用Ltp模型失败---------------------");
             e.printStackTrace();
         }
         finally {

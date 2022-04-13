@@ -5,6 +5,7 @@ package org.jeecg.modules.demo.mynlp.common;/**
 
 
 import com.google.gson.Gson;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -34,6 +35,7 @@ import java.util.Map;
  * @author: ydy
  * @date: 2022年03月28日 20:51
  */
+@Slf4j
 public class HanLPParticipleCommon {
 
     /**
@@ -196,6 +198,7 @@ public class HanLPParticipleCommon {
             resultString = EntityUtils.toString(response.getEntity(),"utf-8");
             return resultString;
         } catch (Exception e) {
+            log.info("-----------------------调用HanLP模型失败---------------------");
             e.printStackTrace();
         }
         finally {
