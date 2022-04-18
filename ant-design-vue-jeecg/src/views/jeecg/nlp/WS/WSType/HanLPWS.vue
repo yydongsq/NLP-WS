@@ -21,17 +21,15 @@
         </a-col>
         <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="PartOfSpeech" icon="question-circle ">词性说明</a-button>
+              <a-button type="primary" @click="PartOfSpeech" icon="question-circle">词性说明</a-button>
               <a-button type="primary" @click="searchQuery" icon="search" style="margin-left: 8px">进行分词</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
             </span>
         </a-col>
       </a-row>
     </a-form>
-    <a-modal v-model:visible="visible" title="词性说明" @ok="handleOk">
-      <p>Some contents...</p>
-      <p>Some contents...</p>
-      <p>Some contents...</p>
+    <a-modal v-model:visible="visible" title="863词性标注集" @ok="handleOk">
+      <PartOfSpeech></PartOfSpeech>
     </a-modal>
     <a-card :bordered="false">
       <a-tabs defaultActiveKey="1" @change="callback">
@@ -65,6 +63,7 @@
 <script>
   import Bar from '@/components/chart/Bar'
   import Pie from '@/components/chart/Pie'
+  import PartOfSpeech from '@/views/jeecg/nlp/WS/PartOfSpeech/PartOfSpeech'
   import ACol from 'ant-design-vue/es/grid/Col'
   import { getAction } from '@/api/manage'
   import { message, Button } from 'ant-design-vue'
@@ -74,7 +73,8 @@
     components: {
       ACol,
       Bar,
-      Pie
+      Pie,
+      PartOfSpeech,
     },
     data() {
       return {
@@ -120,19 +120,6 @@
           if (res.success) {
             console.info(res);
             this.countSource = [];
-            if(type === 'year'){
-              this.getYearCountSource(res.result);
-            }
-            if(type === 'month'){
-              console.info("month= "+ res);
-              this.getMonthCountSource(res.result);
-            }
-            if(type === 'category'){
-              this.getCategoryCountSource(res.result);
-            }
-            if(type === 'cabinet'){
-              this.getCabinetCountSource(res.result);
-            }
             if(type === 'WordSegmentation'){
               let json_Data = JSON.parse(res.result);
               this.getParticipleCountSource(json_Data.data);
@@ -142,54 +129,22 @@
               this.getParticipleCountSource(json_Data.data);
             }
           }else{
-            var that=this;
+            var that = this;
             that.$message.warning(res.message);
           }
         })
       },
-      getCategoryCountSource(data){
-        for (let i = 0; i < data.length; i++) {
-          if(this.tabStatus ==="bar"){
-            this.countSource.push({
-              x: data[i].classifyname,
-              y: data[i].cntrnocount
-            })
-          }else{
-            this.countSource.push({
-              item: data[i].classifyname,
-              count:data[i].cntrnocount
-            })
-          }
-        }
-      },
-      getCabinetCountSource(data){
-        for (let i = 0; i < data.length; i++) {
-          if(this.tabStatus === "bar"){
-            this.countSource.push({
-              x: data[i].cabinetname,
-              y: data[i].cabinetcocunt
-            })
-          }else{
-            this.countSource.push({
-              item: data[i].cabinetname,
-              count:data[i].cabinetcocunt
-            })
-          }
-        }
-      },
       getParticipleCountSource(data){
         for (let i = 0; i < data.length; i++) {
+          let word_nature = data[i].word + "/" + data[i].nature;
           if(this.tabStatus === "bar"){
-            let nature = data[i].nature;
-            let word = data[i].word;
-            let word_nature = word + "/" + nature;
             this.countSource.push({
-              x: data[i].nature,
+              x: word_nature,
               y: 650
             })
           }else{
             this.countSource.push({
-              item: data[i].nature,
+              item: word_nature,
               count:2
             })
           }
@@ -256,18 +211,6 @@
       // 选择请求url
       getUrl(type,param){
         let url = "";
-        if(type === 'year'){
-          url = this.url.getYearCountInfo;
-        }
-        if(type === 'month'){
-          url = this.url.getMonthCountInfo;
-        }
-        if(type === 'category'){
-          url = this.url.getCntrNoCountInfo;
-        }
-        if(type === 'cabinet'){
-          url = this.url.getCabinetCountInfo;
-        }
         if(type === 'WordSegmentation'){
           param = {
             type:"get_all",
