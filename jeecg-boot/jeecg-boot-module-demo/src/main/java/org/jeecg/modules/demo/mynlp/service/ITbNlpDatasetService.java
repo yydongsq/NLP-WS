@@ -10,5 +10,10 @@ import org.jeecg.modules.demo.mynlp.entity.TbNlpDataset;
  * @Version: V1.0
  */
 public interface ITbNlpDatasetService extends IService<TbNlpDataset> {
-
+    /**
+     * 保存
+     * @param entity
+     * @return
+     */
+    boolean save(TbNlpDataset entity);
 }

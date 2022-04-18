@@ -1,31 +1,65 @@
 <template>
-  <a-card :bordered="false">
-    <a-tabs defaultActiveKey="1" @change="callback">
-      <a-tab-pane tab="柱状图" key="1">
-        <a-row>
-          <a-col :span="10">
-            <a-radio-group :value="barType" @change="statisticst">
-              <a-radio-button value="participle">HanLP分词结果</a-radio-button>
-              <a-radio-button value="participle_n">关键字统计</a-radio-button>
-            </a-radio-group>
-          </a-col>
-          <bar class="statistic" title="分词统计" :dataSource="countSource" :height="400"/>
-        </a-row>
-      </a-tab-pane>
-
-      <a-tab-pane tab="饼状图" key="2">
-        <a-row :gutter="24">
-          <a-col :span="8">
-            <a-radio-group :value="pieType" @change="statisticst">
-              <a-radio-button value="participle">分词结果</a-radio-button>
-              <a-radio-button value="participle_n">关键字统计</a-radio-button>
-            </a-radio-group>
-          </a-col>
-          <pie class="statistic" title="分词统计" :dataSource="countSource" :height="450"/>
-        </a-row>
-      </a-tab-pane>
-    </a-tabs>
-  </a-card>
+  <div class="table-page-search-wrapper">
+    <a-form layout="inline" @keyup.enter.native="searchQuery" :form="form">
+      <a-row :gutter="24">
+        <a-col :xl="6" :lg="7" :md="8" :sm="24">
+          <a-form-item label="数据集内容">
+            <a-input
+              v-decorator="[
+                'dataset', // 给表单赋值或拉取表单时，该input对应的key
+                {rules: [{ required: true, message: '请输入数据集内容!' }]}
+                ]"
+              placeholder="请输入数据集内容"
+              v-model="dataset">
+            </a-input>
+          </a-form-item>
+        </a-col>
+        <a-col :xl="3" :lg="7" :md="8" :sm="24">
+          <a-form-item label="是否展示词性">
+            <a-switch  :checked="checked" @change="onChange"></a-switch>
+          </a-form-item>
+        </a-col>
+        <a-col :xl="6" :lg="7" :md="8" :sm="24">
+            <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
+              <a-button type="primary" @click="PartOfSpeech" icon="question-circle ">词性说明</a-button>
+              <a-button type="primary" @click="searchQuery" icon="search" style="margin-left: 8px">进行分词</a-button>
+              <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
+            </span>
+        </a-col>
+      </a-row>
+    </a-form>
+    <a-modal v-model:visible="visible" title="词性说明" @ok="handleOk">
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+      <p>Some contents...</p>
+    </a-modal>
+    <a-card :bordered="false">
+      <a-tabs defaultActiveKey="1" @change="callback">
+        <a-tab-pane tab="柱状图" key="1">
+          <a-row>
+            <a-col :span="10">
+              <a-radio-group :value="barType" @change="statisticst">
+                <a-radio-button value="WordSegmentation">分词统计</a-radio-button>
+                <a-radio-button value="WordSegmentation_n">名词统计</a-radio-button>
+              </a-radio-group>
+            </a-col>
+            <bar class="statistic" title="分词结果" :dataSource="countSource" :height="400"/>
+          </a-row>
+        </a-tab-pane>
+        <a-tab-pane tab="饼状图" key="2">
+          <a-row :gutter="24">
+            <a-col :span="8">
+              <a-radio-group :value="pieType" @change="statisticst">
+                <a-radio-button value="WordSegmentation">分词统计</a-radio-button>
+                <a-radio-button value="WordSegmentation_n">名词统计</a-radio-button>
+              </a-radio-group>
+            </a-col>
+            <pie class="statistic" title="分词结果" :dataSource="countSource" :height="450"/>
+          </a-row>
+        </a-tab-pane>
+      </a-tabs>
+    </a-card>
+  </div>
 </template>
 
 <script>
@@ -33,7 +67,7 @@
   import Pie from '@/components/chart/Pie'
   import ACol from 'ant-design-vue/es/grid/Col'
   import { getAction } from '@/api/manage'
-  import { message, Button } from 'ant-design-vue';
+  import { message, Button } from 'ant-design-vue'
 
   export default {
     name: 'HanLPWS',
@@ -50,16 +84,19 @@
         // 数据集
         countSource: [],
         // 柱状图
-        barType: 'participle',
+        barType: 'WordSegmentation',
         barDate: ['month', 'month'],
         barValue: [],
         // 饼状图
-        pieType: 'participle',
+        pieType: 'WordSegmentation',
         pieDate: ['month', 'month'],
         pieValue: [],
         // 统计图类型
         tabStatus:"bar",
-        dataset: "我也想过过过儿过过的生活",
+        dataset: "",
+        checked:false,
+        visible:false,
+        form: this.$form.createForm(this), // 只有这样注册后，才能通过表单拉取数据
         url: {
           getYearCountInfo: "/mock/api/report/getYearCountInfo",
           getMonthCountInfo:"/mock/api/report/getMonthCountInfo",
@@ -70,12 +107,12 @@
       }
     },
     created() {
-      let url = this.url.getParticiple;
-      this.loadDate(url,'participle',{type:"get_all",dataSet: "我也想过过过儿过过的生活",});
+      //let url = this.url.getParticiple;
+      //this.loadDate(url,'participle',{type:"get_all",dataSet: this.dataSet,});
     },
     methods: {
       loadDate(url,type,param) {
-        const loding = message.loading('正在加载模型进行分词，请稍后...',0);
+        const loding = message.loading('模型加载中，请稍后...',0);
         getAction(url,param,'get').then((res) => {
           loding();
           message.success('模型加载成功！');
@@ -96,11 +133,11 @@
             if(type === 'cabinet'){
               this.getCabinetCountSource(res.result);
             }
-            if(type === 'participle'){
+            if(type === 'WordSegmentation'){
               let json_Data = JSON.parse(res.result);
               this.getParticipleCountSource(json_Data.data);
             }
-            if(type === 'participle_n'){
+            if(type === 'WordSegmentation_n'){
               let json_Data = JSON.parse(res.result);
               this.getParticipleCountSource(json_Data.data);
             }
@@ -109,36 +146,6 @@
             that.$message.warning(res.message);
           }
         })
-      },
-      getYearCountSource(data){
-        for (let i = 0; i < data.length; i++) {
-          if(this.tabStatus === "bar"){
-            this.countSource.push({
-              x: `${data[i].year}年`,
-              y: data[i].yearcount
-            })
-          }else{
-            this.countSource.push({
-              item: `${data[i].year}年`,
-              count:data[i].yearcount
-            })
-          }
-        }
-      },
-      getMonthCountSource(data){
-        for (let i = 0; i < data.length; i++) {
-          if(this.tabStatus === "bar"){
-            this.countSource.push({
-              x: data[i].month,
-              y: data[i].monthcount
-            })
-          }else{
-            this.countSource.push({
-              item: data[i].month,
-              count:data[i].monthcount
-            })
-          }
-        }
       },
       getCategoryCountSource(data){
         for (let i = 0; i < data.length; i++) {
@@ -173,13 +180,16 @@
       getParticipleCountSource(data){
         for (let i = 0; i < data.length; i++) {
           if(this.tabStatus === "bar"){
+            let nature = data[i].nature;
+            let word = data[i].word;
+            let word_nature = word + "/" + nature;
             this.countSource.push({
-              x: data[i].word,
+              x: data[i].nature,
               y: 650
             })
           }else{
             this.countSource.push({
-              item: data[i].word,
+              item: data[i].nature,
               count:2
             })
           }
@@ -187,23 +197,37 @@
       },
       // 选择统计图类别
       callback(key) {
-        if(key === "1"){
-          this.tabStatus = "bar";
-          this.queryDatebar();
-        }else{
-          this.tabStatus = "pie";
-          this.queryDatepie();
-        }
+        //通过validateFields的方法，能够校验必填项是否有值，若无，则页面会给出警告！
+        this.form.validateFields((err, values) => {
+          //判断必填项校验是否通过
+          if (!err) {
+            if(key === "1"){
+              this.tabStatus = "bar";
+              this.queryDatebar();
+            }else{
+              this.tabStatus = "pie";
+              this.queryDatepie();
+            }
+            console.log(values)
+          }
+        })
       },
       // 选择统计类别
       statisticst(e) {
-        if(this.tabStatus === "pie"){
-          this.pieType = e.target.value;
-          this.queryDatepie();
-        }else{
-          this.barType = e.target.value;
-          this.queryDatebar();
-        }
+        //通过validateFields的方法，能够校验必填项是否有值，若无，则页面会给出警告！
+        this.form.validateFields((err, values) => {
+          //判断必填项校验是否通过
+          if (!err) {
+            if(this.tabStatus === "pie"){
+              this.pieType = e.target.value;
+              this.queryDatepie();
+            }else{
+              this.barType = e.target.value;
+              this.queryDatebar();
+            }
+            console.log(values)
+          }
+        })
       },
       // 按月份查询
       queryDatebar(){
@@ -244,16 +268,16 @@
         if(type === 'cabinet'){
           url = this.url.getCabinetCountInfo;
         }
-        if(type === 'participle'){
+        if(type === 'WordSegmentation'){
           param = {
             type:"get_all",
             dataSet: this.dataset
           };
           url = this.url.getParticiple;
         }
-        if(type === 'participle_n'){
+        if(type === 'WordSegmentation_n'){
           param = {
-            type:"get_all",
+            type:"get_n",
             dataSet: this.dataset
           };
           url = this.url.getParticiple;
@@ -275,6 +299,40 @@
           mode[1] === 'date' ? 'month' : mode[1]
         ]
       },
+      //是否开启展示词性功能
+      onChange(checked) {
+        this.checked = checked;
+        console.log(`切换 to ${checked}`);
+      },
+      //将输入框置为空
+      searchReset(){
+        this.dataset = undefined;
+        this.checked = false;
+        //加入v-decorator后无法使用v-model进行双向数据绑定，通过 setFieldsValue() 方法进行数据改变
+        this.form.setFieldsValue({
+          dataset: undefined,
+          checked: false
+        })
+      },
+      //是否弹出词性说明对话框
+      PartOfSpeech(){
+        this.visible = true;
+      },
+      //关闭词性说明对话框窗口
+      handleOk(){
+        this.visible = false;
+      },
+      //进行分词
+      searchQuery(){
+        //通过validateFields的方法，能够校验必填项是否有值，若无，则页面会给出警告！
+        this.form.validateFields((err, values) => {
+          //判断必填项校验是否通过
+          if (!err) {
+            this.getUrl("WordSegmentation",{});
+            console.log(values)
+          }
+        })
+      }
     }
   }
 </script>

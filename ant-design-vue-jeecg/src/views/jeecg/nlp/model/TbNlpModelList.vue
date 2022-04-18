@@ -17,7 +17,7 @@
           <template v-if="toggleSearchStatus">
             <a-col :xl="6" :lg="7" :md="8" :sm="24">
               <a-form-item label="模型创建时间">
-                <j-date :show-time="true" date-format="YYYY-MM-DD HH:mm:ss" placeholder="请选择模型创建时间" v-model="queryParam.modelCreatTime"></j-date>
+                <j-date :show-time="true" date-format="YYYY-MM-DD" placeholder="请选择模型创建时间" v-model="queryParam.modelCreatTime"></j-date>
               </a-form-item>
             </a-col>
           </template>

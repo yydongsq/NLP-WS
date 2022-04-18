@@ -75,7 +75,7 @@
     },
     methods: {
       loadDate(url,type,param) {
-        const loding = message.loading('正在加载模型进行分词，请稍后...',0);
+        const loding = message.loading('模型加载中，请稍后...',0);
         getAction(url,param,'get').then((res) => {
           loding();
           message.success('模型加载成功！');

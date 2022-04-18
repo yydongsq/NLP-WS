@@ -23,7 +23,7 @@ parser.add_argument('text')
 # Thulac
 def select_WSType_byThulac(text,WS_type):
     if WS_type == "sentence":
-        thun = thulac.thulac()   #默认模式
+        thun = thulac.thulac()   #默认模式，进行词性标注()
         result = thun.cut(text,text = False) #进行一句话分词,text = False是否返回文本，不返回文本则返回一个二维数组
         print("----------调用Thulac成功----------")
         return result
@@ -38,7 +38,7 @@ def select_WSType_byThulac(text,WS_type):
 # Jieba
 def select_WSType_byJieba(text,WS_type):
     if WS_type == "sentence":
-        jieba.enable_paddle()   #启动paddle模式(词性标注)
+        jieba.enable_paddle()   #启动paddle模式进行词性标注(Jieba使用ICTCLAS汉语词性标注集)
         words = pseg.cut(text,use_paddle=True)
         t = {}
         i = 0
@@ -60,7 +60,7 @@ def select_WSType_byLtp(text,WS_type):
         ltp = LTP()  # 载入模型，默认加载 Small 模型
         segment, _ = ltp.seg([text])
         seg, hidden = ltp.seg([text])   #分词
-        pos = ltp.pos(hidden)   #词性标注
+        pos = ltp.pos(hidden)   #词性标注(LTP使用的是863词性标注集)
         t = {}
         t[0] = seg.pop()
         t[1] = pos.pop()
@@ -82,7 +82,7 @@ def select_WSType_byHanLP(text,WS_type):
         HanLPUtil = hanlp.load(hanlp.pretrained.mtl.CLOSE_TOK_POS_NER_SRL_DEP_SDP_CON_ELECTRA_BASE_ZH)
         #执行所有标准的词性标注（pos：默认执行ctb标准；pos/pku：执行PKU词性标注；pos/ctb：执行CTB词性标注；pos/863：执行863词性标注；pos/*：执行所有标准）
         #以pos开头的字段为词性，以tok开头的第一个数组为单词，两者按下标一一对应。      
-        result = HanLPUtil([text], tasks='pos/pku')
+        result = HanLPUtil([text], tasks='pos/863')
         print("----------调用HanLP成功----------")
         return result
     else:

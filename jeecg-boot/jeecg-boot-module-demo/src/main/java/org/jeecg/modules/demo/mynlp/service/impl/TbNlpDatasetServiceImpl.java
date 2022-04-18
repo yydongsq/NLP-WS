@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.modules.demo.mynlp.entity.TbNlpDataset;
 import org.jeecg.modules.demo.mynlp.mapper.TbNlpDatasetMapper;
 import org.jeecg.modules.demo.mynlp.service.ITbNlpDatasetService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,4 +16,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class TbNlpDatasetServiceImpl extends ServiceImpl<TbNlpDatasetMapper, TbNlpDataset> implements ITbNlpDatasetService {
 
+    @Autowired
+    TbNlpDatasetMapper tbNlpDatasetMapper;
+    @Override
+    public boolean save(TbNlpDataset entity) {
+        tbNlpDatasetMapper.insert(entity);
+        return false;
+    }
 }

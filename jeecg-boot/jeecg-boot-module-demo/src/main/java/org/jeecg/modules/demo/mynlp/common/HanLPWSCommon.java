@@ -128,7 +128,7 @@ public class HanLPWSCommon {
     }
 
     /**
-     * 执行自己封装的API
+     * 执行分词
      * @param text
      * @param type
      * @return
@@ -148,7 +148,7 @@ public class HanLPWSCommon {
         ArrayList<HanLPWSModel> list = new ArrayList<HanLPWSModel>();
         //获取分词数组和词性数组
         ArrayList<ArrayList<String>> list_word_temp = (ArrayList<ArrayList<String>>)map_result.get("tok/fine");
-        ArrayList<ArrayList<String>> list_nature_temp = (ArrayList<ArrayList<String>>)map_result.get("pos/pku");
+        ArrayList<ArrayList<String>> list_nature_temp = (ArrayList<ArrayList<String>>)map_result.get("pos/863");
         ArrayList<String> list_word = list_word_temp.get(0);
         ArrayList<String> list_nature = list_nature_temp.get(0);
         //将map集合中的分词数据封装在对应的实体类中
@@ -170,6 +170,12 @@ public class HanLPWSCommon {
         return resultJsonString;
     }
 
+    /**
+     * 执行自己封装的API
+     * @param url
+     * @param params
+     * @return
+     */
     public String doMyHanLPApi(String url, Map<String,Object> params) {
         // 创建Httpclient对象
         CloseableHttpClient httpClient = HttpClients.createDefault();
