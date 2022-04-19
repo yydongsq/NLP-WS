@@ -5,11 +5,11 @@
         <a-row>
           <a-col :span="10">
             <a-radio-group :value="barType" @change="statisticst">
-              <a-radio-button value="participle">Ltp分词结果</a-radio-button>
-              <a-radio-button value="participle_n">关键字统计</a-radio-button>
+              <a-radio-button value="WordSegmentation">{{ShowReloadModel}}分词统计</a-radio-button>
+              <a-radio-button value="WordSegmentation_n">{{ShowReloadModel}}名词统计</a-radio-button>
             </a-radio-group>
           </a-col>
-          <bar class="statistic" title="分词统计" :dataSource="countSource" :height="400"/>
+          <bar class="statistic" title="分词结果" :dataSource="countSource" :height="400"/>
         </a-row>
       </a-tab-pane>
 
@@ -17,11 +17,11 @@
         <a-row :gutter="24">
           <a-col :span="8">
             <a-radio-group :value="pieType" @change="statisticst">
-              <a-radio-button value="participle">分词结果</a-radio-button>
-              <a-radio-button value="participle_n">关键字统计</a-radio-button>
+              <a-radio-button value="WordSegmentation">{{ShowReloadModel}}分词统计</a-radio-button>
+              <a-radio-button value="WordSegmentation_n">{{ShowReloadModel}}名词统计</a-radio-button>
             </a-radio-group>
           </a-col>
-          <pie class="statistic" title="分词统计" :dataSource="countSource" :height="450"/>
+          <pie class="statistic" title="分词结果" :dataSource="countSource" :height="450"/>
         </a-row>
       </a-tab-pane>
     </a-tabs>
@@ -36,7 +36,14 @@
   import { message, Button } from 'ant-design-vue';
 
   export default {
-    name: 'LtpWS',
+    name: 'AllWS',
+    //接收父组件传来的属性
+    //props:['ShowModel'],
+    props: {
+      ShowModel: Object,
+      DataSet: Object,
+      checked: Object
+    },
     components: {
       ACol,
       Bar,
@@ -50,28 +57,33 @@
         // 数据集
         countSource: [],
         // 柱状图
-        barType: 'participle',
+        barType: 'WordSegmentation',
         barDate: ['month', 'month'],
         barValue: [],
         // 饼状图
-        pieType: 'participle',
+        pieType: 'WordSegmentation',
         pieDate: ['month', 'month'],
         pieValue: [],
         // 统计图类型
         tabStatus:"bar",
-        dataset: "我也想过过过儿过过的生活",
+        ShowReloadModel: '',
+        ShowModelUpdate: false,
         url: {
           getYearCountInfo: "/mock/api/report/getYearCountInfo",
           getMonthCountInfo:"/mock/api/report/getMonthCountInfo",
           getCntrNoCountInfo:"/mock/api/report/getCntrNoCountInfo",
           getCabinetCountInfo:"/mock/api/report/getCabinetCountInfo",
-          getParticiple:"/jeecg-demo/mynlp/ltp/ltpWS",
+          getHanLPWS:"/jeecg-demo/mynlp/hanlp/hanLPWS",
+          getJiebaWS:"/jeecg-demo/mynlp/jieba/jiebaWS",
+          getLtpWS:"/jeecg-demo/mynlp/ltp/ltpWS",
+          getThulacWS:"/jeecg-demo/mynlp/thulac/thulacWS",
         },
+        initShow:"",
       }
     },
     created() {
-      let url = this.url.getParticiple;
-      this.loadDate(url,'participle',{type:"get_all",dataSet: "我也想过过过儿过过的生活",});
+      //let url = this.url.getParticiple;
+      //this.loadDate(url,'participle',{type:"get_all"});
     },
     methods: {
       loadDate(url,type,param) {
@@ -79,107 +91,38 @@
         getAction(url,param,'get').then((res) => {
           loding();
           message.success('模型加载成功！');
+          this.ShowReloadModel = this.ShowModel;
           console.info("res.success = " + res.success);
           if (res.success) {
             console.info(res);
             this.countSource = [];
-            if(type === 'year'){
-              this.getYearCountSource(res.result);
-            }
-            if(type === 'month'){
-              console.info("month= "+ res);
-              this.getMonthCountSource(res.result);
-            }
-            if(type === 'category'){
-              this.getCategoryCountSource(res.result);
-            }
-            if(type === 'cabinet'){
-              this.getCabinetCountSource(res.result);
-            }
-            if(type === 'participle'){
+            if(type === 'WordSegmentation'){
               let json_Data = JSON.parse(res.result);
-              this.getParticipleCountSource(json_Data.data);
+              this.getWSData(json_Data.data);
             }
-            if(type === 'participle_n'){
+            if(type === 'WordSegmentation_n'){
               let json_Data = JSON.parse(res.result);
-              this.getParticipleCountSource(json_Data.data);
+              this.getWSData(json_Data.data);
             }
           }else{
-            var that=this;
+            var that = this;
             that.$message.warning(res.message);
           }
         })
       },
-      getYearCountSource(data){
+      getWSData(data){
+        let wordOrNature = "";
+        console.info("checked=" + this.checked);
         for (let i = 0; i < data.length; i++) {
+          wordOrNature = this.checked === true ? data[i].word + "/" + data[i].nature : data[i].word;
           if(this.tabStatus === "bar"){
             this.countSource.push({
-              x: `${data[i].year}年`,
-              y: data[i].yearcount
-            })
-          }else{
-            this.countSource.push({
-              item: `${data[i].year}年`,
-              count:data[i].yearcount
-            })
-          }
-        }
-      },
-      getMonthCountSource(data){
-        for (let i = 0; i < data.length; i++) {
-          if(this.tabStatus === "bar"){
-            this.countSource.push({
-              x: data[i].month,
-              y: data[i].monthcount
-            })
-          }else{
-            this.countSource.push({
-              item: data[i].month,
-              count:data[i].monthcount
-            })
-          }
-        }
-      },
-      getCategoryCountSource(data){
-        for (let i = 0; i < data.length; i++) {
-          if(this.tabStatus ==="bar"){
-            this.countSource.push({
-              x: data[i].classifyname,
-              y: data[i].cntrnocount
-            })
-          }else{
-            this.countSource.push({
-              item: data[i].classifyname,
-              count:data[i].cntrnocount
-            })
-          }
-        }
-      },
-      getCabinetCountSource(data){
-        for (let i = 0; i < data.length; i++) {
-          if(this.tabStatus === "bar"){
-            this.countSource.push({
-              x: data[i].cabinetname,
-              y: data[i].cabinetcocunt
-            })
-          }else{
-            this.countSource.push({
-              item: data[i].cabinetname,
-              count:data[i].cabinetcocunt
-            })
-          }
-        }
-      },
-      getParticipleCountSource(data){
-        for (let i = 0; i < data.length; i++) {
-          if(this.tabStatus === "bar"){
-            this.countSource.push({
-              x: data[i].word,
+              x: wordOrNature,
               y: 650
             })
           }else{
             this.countSource.push({
-              item: data[i].word,
+              item: wordOrNature,
               count:2
             })
           }
@@ -205,7 +148,6 @@
           this.queryDatebar();
         }
       },
-      // 按月份查询
       queryDatebar(){
         if(this.barValue.length>0){
           this.getUrl(this.barType,{startTime:this.barValue[0]._d,endTime:this.barValue[1]._d});
@@ -231,50 +173,74 @@
       },
       // 选择请求url
       getUrl(type,param){
+        let showModel = this.ShowModel;
+        let dataSet = this.DataSet;
         let url = "";
-        if(type === 'year'){
-          url = this.url.getYearCountInfo;
-        }
-        if(type === 'month'){
-          url = this.url.getMonthCountInfo;
-        }
-        if(type === 'category'){
-          url = this.url.getCntrNoCountInfo;
-        }
-        if(type === 'cabinet'){
-          url = this.url.getCabinetCountInfo;
-        }
-        if(type === 'participle'){
+        //type为分词类型
+        if(type === 'WordSegmentation' && showModel === "HanLP"){
           param = {
             type:"get_all",
-            dataSet: this.dataset
+            dataSet: dataSet,
           };
-          url = this.url.getParticiple;
+          url = this.url.getHanLPWS;
         }
-        if(type === 'participle_n'){
+        if(type === 'WordSegmentation' && showModel === "Thulac"){
           param = {
             type:"get_all",
-            dataSet: this.dataset
+            dataSet: dataSet,
           };
-          url = this.url.getParticiple;
+          url = this.url.getThulacWS;
         }
-        this.loadDate(url,type,param);
+        if(type === 'WordSegmentation' && showModel === "Jieba"){
+          param = {
+            type:"get_all",
+            dataSet: dataSet,
+          };
+          url = this.url.getJiebaWS;
+        }
+        if(type === 'WordSegmentation' && showModel === "LTP"){
+          param = {
+            type:"get_all",
+            dataSet: dataSet,
+          };
+          url = this.url.getLtpWS;
+        }
+        if(type === 'WordSegmentation_n' && showModel === "HanLP"){
+          param = {
+            type:"get_n",
+            dataSet: dataSet,
+          };
+          url = this.url.getHanLPWS;
+        }
+        if(url !== ""){
+          this.loadDate(url,type,param,dataSet);
+        }
       },
-      // 选择月份日期
-      handleBarDate(value, mode) {
-        this.barValue = value
-        this.barDate = [
-          mode[0] === 'date' ? 'month' : mode[0],
-          mode[1] === 'date' ? 'month' : mode[1]
-        ]
+    },
+    watch:{
+      //将ShowModel作为监事属性
+      ShowModel:{
+        //immediate:true, //初始化时让handler调用一下
+        deep:true,//深度监视
+        handler(newValue,oldValue){
+          this.showModelUpdate = true;
+          this.getUrl("WordSegmentation",{});
+        }
       },
-      handlePieDate(value, mode) {
-        this.pieValue = value
-        this.pieDate = [
-          mode[0] === 'date' ? 'month' : mode[0],
-          mode[1] === 'date' ? 'month' : mode[1]
-        ]
-      },
+      //将DataSet作为监事属性
+      DataSet:{
+        //immediate:true, //初始化时让handler调用一下
+        deep:true,//深度监视
+        handler(newValue,oldValue){
+          //解决数据集和模型同时改变时重复调用gatUrl方法
+          if(this.showModelUpdate === false){
+            this.getUrl("WordSegmentation",{});
+          }else{
+            //解决数据集改变而模型不改变时不调用gatUrl方法
+            this.showModelUpdate = false;
+          }
+        }
+      }
     }
   }
 </script>
