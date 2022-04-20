@@ -6,7 +6,7 @@
           <a-col :span="10">
             <a-radio-group :value="barType" @change="statisticst">
               <a-radio-button value="WordSegmentation">{{ShowReloadModel}}分词统计</a-radio-button>
-              <a-radio-button value="WordSegmentation_n">{{ShowReloadModel}}名词统计</a-radio-button>
+              <a-radio-button value="WordSegmentation_N">{{ShowReloadModel}}名词统计</a-radio-button>
             </a-radio-group>
           </a-col>
           <bar class="statistic" title="分词结果" :dataSource="countSource" :height="400"/>
@@ -18,7 +18,7 @@
           <a-col :span="8">
             <a-radio-group :value="pieType" @change="statisticst">
               <a-radio-button value="WordSegmentation">{{ShowReloadModel}}分词统计</a-radio-button>
-              <a-radio-button value="WordSegmentation_n">{{ShowReloadModel}}名词统计</a-radio-button>
+              <a-radio-button value="WordSegmentation_N">{{ShowReloadModel}}名词统计</a-radio-button>
             </a-radio-group>
           </a-col>
           <pie class="statistic" title="分词结果" :dataSource="countSource" :height="450"/>
@@ -92,36 +92,49 @@
           console.info("res.success = " + res.success);
           if (res.success) {
             console.info(res);
-            this.countSource = [];
+            let json_Data = JSON.parse(res.result);
+            let json_DataSet = json_Data.data;
+            this.countSource = [];  //在每次重新分词前刷新数据源数组（置空）
             if(type === 'WordSegmentation'){
-              let json_Data = JSON.parse(res.result);
-              this.getWSData(json_Data.data);
+              this.getWSData(json_DataSet);
             }
-            if(type === 'WordSegmentation_n'){
-              let json_Data = JSON.parse(res.result);
-              this.getWSData(json_Data.data);
+            if(type === 'WordSegmentation_N'){
+              for (let i = 0; i < json_DataSet.length; i++) {
+                //alert("前 = " + i);
+                 if(json_DataSet[i].nature !== "n" && json_DataSet[i].nature !== "ns"){
+                   json_DataSet.splice(i, 1);//从i开始（包括i，i从0开始）删除一个元素
+                   i--; //删除数组指定元素之后，将i重新定位在删除的位置跟此时位置上的新元素重新比较
+                   //alert("后 = " + i);
+                 }
+              }
+              this.getWSData(json_DataSet);
             }
           }else{
-            var that = this;
+            let that = this;
             that.$message.warning(res.message);
           }
         })
       },
       getWSData(data){
-        let wordOrNature = "";
+        console.info("筛选后的数据json_DataSet=" + data);
         console.info("checked=" + this.checked);
-        for (let i = 0; i < data.length; i++) {
-          wordOrNature = this.checked === true ? data[i].word + "/" + data[i].nature : data[i].word;
-          if(this.tabStatus === "bar"){
-            this.countSource.push({
-              x: wordOrNature,
-              y: 650
-            })
-          }else{
-            this.countSource.push({
-              item: wordOrNature,
-              count:2
-            })
+        if(data.length ===  0){
+          message.warning("分词结果中不含指定词性！")
+        }else{
+          let wordOrNature = "";
+          for (let i = 0; i < data.length; i++) {
+            wordOrNature = this.checked === true ? data[i].word + "/" + data[i].nature : data[i].word;
+            if(this.tabStatus === "bar"){
+              this.countSource.push({
+                x: wordOrNature,
+                y: 650
+              })
+            }else{
+              this.countSource.push({
+                item: wordOrNature,
+                count:2
+              })
+            }
           }
         }
       },
@@ -172,53 +185,54 @@
       getUrl(type,param){
         let showModel = this.ShowModel;
         let dataSetId = this.dataSetId;
-        let dsJsonString = "";
+        let url = "";
+        let dataSetModel = {};
         console.info("dataSetId = " + dataSetId);
         if(this.dataSetId === undefined){
-          let dataSetModel = {
-            dtText:this.DataSet
+          dataSetModel = {
+            "dtText":this.DataSet
           };
-          dsJsonString = JSON.stringify(dataSetModel);
         }
-        let url = "";
-        //type为分词类型
-        if(type === 'WordSegmentation' && showModel === "HanLP"){
+        let dsJsonString = JSON.stringify(dataSetModel);
+        if(showModel === "HanLP"){
           param = {
             dataSetId:dataSetId,
             type:"get_all"
           };
           url = this.url.getHanLPWS;
         }
-        if(type === 'WordSegmentation' && showModel === "Thulac"){
+        if(showModel === "Thulac"){
           param = {
             dataSetId:dataSetId,
             type:"get_all"
           };
           url = this.url.getThulacWS;
         }
-        if(type === 'WordSegmentation' && showModel === "Jieba"){
+        if(showModel === "Jieba"){
           param = {
             dataSetId:dataSetId,
             type:"get_all"
           };
           url = this.url.getJiebaWS;
         }
-        if(type === 'WordSegmentation' && showModel === "Ltp"){
+        if(showModel === "Ltp"){
           param = {
             dataSetId:dataSetId,
             type:"get_all"
           };
           url = this.url.getLtpWS;
         }
-        if(type === 'WordSegmentation_n' && showModel === "HanLP"){
-          param = {
-            dataSetId:dataSetId,
-            type:"get_n"
-          };
-          url = this.url.getHanLPWS;
-        }
+        // if(type === 'WordSegmentation_n' && showModel === "HanLP"){
+        //   param = {
+        //     dataSetId:dataSetId,
+        //     type:"get_n"
+        //   };
+        //   url = this.url.getHanLPWS;
+        // }
         if(url !== ""){
-          console.info("dsJsonString = " + dsJsonString);
+          console.info("转换为JSON字符串的数据集dsJsonString = " + dsJsonString);
+          console.info("分词类型type = " + type);
+          //type为分词类型
           this.loadDate(url,type,param,dsJsonString);
         }
       },

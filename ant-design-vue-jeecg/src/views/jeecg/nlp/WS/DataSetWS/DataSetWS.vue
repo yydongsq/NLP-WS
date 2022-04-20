@@ -121,12 +121,6 @@
               this.visible = true;
               this.PSVisible = false;
               this.DataSetVisible = true;
-              // let param = {
-              //   id:this.dataSetId
-              // }
-              // let getDataSetDataByIdUrl = this.url.getDataSetDataById;
-              // this.loadData(getDataSetDataByIdUrl,"dataSet",param);
-              // console.log("values = " + values);
             }
           })
         },
