@@ -171,8 +171,7 @@
           {
             title:'数据集内容',
             align:"center",
-            dataIndex: 'dtText',
-            scopedSlots: {customRender: 'htmlSlot'}
+            dataIndex: 'dtText'
           },
           {
             title:'数据集大小',

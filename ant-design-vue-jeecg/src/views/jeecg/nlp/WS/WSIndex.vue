@@ -32,17 +32,18 @@
   import Bar from '@/components/chart/Bar'
   import Pie from '@/components/chart/Pie'
   import ACol from 'ant-design-vue/es/grid/Col'
-  import { getAction } from '@/api/manage'
+  import { putNlpAction } from '@/api/manage'
   import { message, Button } from 'ant-design-vue';
 
   export default {
-    name: 'AllWS',
+    name: 'WSIndex',
     //接收父组件传来的属性
     //props:['ShowModel'],
     props: {
       ShowModel: Object,
       DataSet: Object,
-      checked: Object
+      checked: Object,
+      dataSetId: Object
     },
     components: {
       ACol,
@@ -81,14 +82,10 @@
         initShow:"",
       }
     },
-    created() {
-      //let url = this.url.getParticiple;
-      //this.loadDate(url,'participle',{type:"get_all"});
-    },
     methods: {
-      loadDate(url,type,param) {
+      loadDate(url,type,param,dsJsonString) {
         const loding = message.loading('模型加载中，请稍后...',0);
-        getAction(url,param,'get').then((res) => {
+        putNlpAction(url,param,dsJsonString).then((res) => {
           loding();
           message.success('模型加载成功！');
           this.ShowReloadModel = this.ShowModel;
@@ -174,48 +171,61 @@
       // 选择请求url
       getUrl(type,param){
         let showModel = this.ShowModel;
-        let dataSet = this.DataSet;
+        let dataSetId = this.dataSetId;
+        let dsJsonString = "";
+        console.info("dataSetId = " + dataSetId);
+        if(this.dataSetId === undefined){
+          let dataSetModel = {
+            dtText:this.DataSet
+          };
+          dsJsonString = JSON.stringify(dataSetModel);
+        }
         let url = "";
         //type为分词类型
         if(type === 'WordSegmentation' && showModel === "HanLP"){
           param = {
-            type:"get_all",
-            dataSet: dataSet,
+            dataSetId:dataSetId,
+            type:"get_all"
           };
           url = this.url.getHanLPWS;
         }
         if(type === 'WordSegmentation' && showModel === "Thulac"){
           param = {
-            type:"get_all",
-            dataSet: dataSet,
+            dataSetId:dataSetId,
+            type:"get_all"
           };
           url = this.url.getThulacWS;
         }
         if(type === 'WordSegmentation' && showModel === "Jieba"){
           param = {
-            type:"get_all",
-            dataSet: dataSet,
+            dataSetId:dataSetId,
+            type:"get_all"
           };
           url = this.url.getJiebaWS;
         }
-        if(type === 'WordSegmentation' && showModel === "LTP"){
+        if(type === 'WordSegmentation' && showModel === "Ltp"){
           param = {
-            type:"get_all",
-            dataSet: dataSet,
+            dataSetId:dataSetId,
+            type:"get_all"
           };
           url = this.url.getLtpWS;
         }
         if(type === 'WordSegmentation_n' && showModel === "HanLP"){
           param = {
-            type:"get_n",
-            dataSet: dataSet,
+            dataSetId:dataSetId,
+            type:"get_n"
           };
           url = this.url.getHanLPWS;
         }
         if(url !== ""){
-          this.loadDate(url,type,param,dataSet);
+          console.info("dsJsonString = " + dsJsonString);
+          this.loadDate(url,type,param,dsJsonString);
         }
       },
+    },
+    created() {
+      //let url = this.url.getParticiple;
+      //this.loadDate(url,'participle',{type:"get_all"});
     },
     watch:{
       //将ShowModel作为监事属性

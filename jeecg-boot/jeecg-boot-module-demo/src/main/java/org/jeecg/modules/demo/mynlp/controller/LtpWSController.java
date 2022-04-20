@@ -6,10 +6,8 @@ package org.jeecg.modules.demo.mynlp.controller;/**
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.modules.demo.mynlp.common.LtpWSCommon;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.jeecg.modules.demo.mynlp.entity.TbNlpDataset;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Description: TODO
@@ -20,11 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/mynlp/ltp")
 @Slf4j
 public class LtpWSController {
-    @GetMapping(value = "/ltpWS")
-    public Result<String> ltpWS(@RequestParam("type") String type,@RequestParam("dataSet") String dataSet) {
+    @PutMapping(value = "/ltpWS")
+    public Result<String> ltpWS(@RequestParam("type") String type,@RequestParam(value = "dataSetId",required = false) String dataSetId,@RequestBody TbNlpDataset tbNlpDataset) {
         LtpWSCommon participle = new LtpWSCommon();
-        String text = dataSet;
+        String text = dataSetId;
         System.out.println(type);
+        System.out.println(tbNlpDataset);
         String ltpParticiple = participle.getLtpWS(text,type);
         log.info("Ltp分词结果集ltpParticiple：" + ltpParticiple);
         Result<String> result = new Result<String>();

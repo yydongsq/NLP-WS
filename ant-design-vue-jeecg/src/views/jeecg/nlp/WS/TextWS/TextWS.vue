@@ -2,7 +2,7 @@
   <div class="table-page-search-wrapper">
     <a-form layout="inline" @keyup.enter.native="searchQuery" :form="form">
       <a-row :gutter="24">
-        <a-col :xl="6" :lg="7" :md="8" :sm="24">
+        <a-col :xl="5" :lg="7" :md="8" :sm="24">
           <a-form-item label="数据集内容">
             <a-input
               v-decorator="[
@@ -14,7 +14,7 @@
             </a-input>
           </a-form-item>
         </a-col>
-        <a-col :xl="6" :lg="7" :md="8" :sm="24">
+        <a-col :xl="5" :lg="7" :md="8" :sm="24">
           <a-form-item label="模型名称">
             <a-select
               v-decorator="[
@@ -24,7 +24,7 @@
               placeholder="请选择模型名称"
               :value="ModelName"
               @change='handleModelChange'>
-              <a-select-option v-for="m in models" :key="m.id">{{m.modelName}}</a-select-option>
+              <a-select-option v-for="m in models" :key="m.id" :value="m.modelName">{{m.modelName}}</a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
@@ -117,7 +117,7 @@
         })
       },
       loadModelData(url,param) {
-        getAction(url,param,'get').then((res) => {
+        getAction(url,param).then((res) => {
           console.info("res.success = " + res.success);
           if (res.success) {
             this.models = res.result.records;

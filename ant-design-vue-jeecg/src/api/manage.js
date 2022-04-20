@@ -49,6 +49,19 @@ export function putAction(url,parameter) {
   })
 }
 
+//putNlp
+export function putNlpAction(url,parameter,dataSet) {
+  return axios({
+    url: url,
+    method:'put',
+    params: parameter,
+    data: dataSet,
+    headers:{
+      'Content-Type':'application/json;charset=utf-8'
+    }
+  })
+}
+
 //get
 export function getAction(url,parameter) {
   let sign = signMd5Utils.getSign(url, parameter);

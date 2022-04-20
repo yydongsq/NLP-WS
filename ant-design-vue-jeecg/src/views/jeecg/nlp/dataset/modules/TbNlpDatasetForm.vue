@@ -25,7 +25,7 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="数据集内容" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="dtText">
-              <j-editor v-model="model.dtText" />
+              <a-textarea v-model="model.dtText" rows="4" placeholder="请输入数据集内容" />
             </a-form-model-item>
           </a-col>
           <a-col :span="24">

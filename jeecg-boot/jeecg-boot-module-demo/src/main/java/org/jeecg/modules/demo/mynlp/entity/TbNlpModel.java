@@ -77,6 +77,8 @@ public class TbNlpModel implements Serializable {
 	/**模型创建时间*/
 	@Excel(name = "模型创建时间", width = 15)
     @ApiModelProperty(value = "模型创建时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private Date modelCreatTime;
 	/**模型更新人*/
 	@Excel(name = "模型更新人", width = 15)
