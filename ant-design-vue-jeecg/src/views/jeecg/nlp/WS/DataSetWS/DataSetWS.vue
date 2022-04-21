@@ -140,7 +140,7 @@
           this.modalTitle = "863词性标注集";
           this.visible = true;
           this.DataSetVisible = false;
-          this.DataSetResultVisible = true;
+          this.DataSetResultVisible = false;
           this.PSVisible = true;
         },
         //关闭词性说明对话框窗口
