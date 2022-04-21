@@ -1,11 +1,14 @@
 <template>
-  <v-chart :forceFit="true" :height="height" :data="data" :scale="scale" :onClick="handleClick">
-    <v-tooltip :showTitle="false" dataKey="item*percent"/>
-    <v-axis/>
-    <v-legend dataKey="item"/>
-    <v-pie position="percent" color="item" :v-style="pieStyle" :label="labelConfig"/>
-    <v-coord type="theta"/>
-  </v-chart>
+  <div :style="{ padding: '0 0 32px 32px' }">
+    <h4 :style="{ marginBottom: '20px',padding: '0 0 0 12px'}">{{ title }}</h4>
+    <v-chart :forceFit="true" :height="height" :data="data" :scale="scale" :padding="padding" :onClick="handleClick">
+      <v-tooltip :showTitle="false" dataKey="item*percent"/>
+      <v-axis/>
+      <v-legend dataKey="item"/>
+      <v-pie position="percent" color="item" :v-style="pieStyle" :label="labelConfig"/>
+      <v-coord type="theta"/>
+    </v-chart>
+  </div>
 </template>
 
 <script>
@@ -50,7 +53,8 @@
           formatter: (val, item) => {
             return item.point.item + ': ' + val
           }
-        }]
+        }],
+        padding: ['auto', 'auto', '40', '50']
       }
     },
     computed: {

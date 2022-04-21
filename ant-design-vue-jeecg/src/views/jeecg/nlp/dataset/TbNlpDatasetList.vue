@@ -102,7 +102,10 @@
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a @click="handleDetail(record)">详情</a>
+                <a @click="handleDataSetDetail(record)">查看数据集详情</a>
+              </a-menu-item>
+              <a-menu-item>
+                <a @click="handleDetail(record)">查看表单详情</a>
               </a-menu-item>
               <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
@@ -112,10 +115,11 @@
             </a-menu>
           </a-dropdown>
         </span>
-
       </a-table>
     </div>
-
+    <a-modal v-model:visible="visible" :title="modalTitle" @ok="handleOk">
+      <div>{{dataSetContent}}</div>
+    </a-modal>
     <tb-nlp-dataset-modal ref="modalForm" @ok="modalFormOk"></tb-nlp-dataset-modal>
   </a-card>
 </template>
@@ -169,11 +173,6 @@
             dataIndex: 'dtName'
           },
           {
-            title:'数据集内容',
-            align:"center",
-            dataIndex: 'dtText'
-          },
-          {
             title:'数据集大小',
             align:"center",
             dataIndex: 'dtSize'
@@ -225,6 +224,9 @@
         },
         dictOptions:{},
         superFieldList:[],
+        dataSetContent:'',  //数据集内容
+        modalTitle:'',  //数据集窗口标题
+        visible:false  //对话框开启关闭
       }
     },
     created() {
@@ -252,7 +254,17 @@
         fieldList.push({type:'datetime',value:'dtUpdateTime',text:'数据集更新时间'})
         fieldList.push({type:'string',value:'dtMemo',text:'备注',dictCode:''})
         this.superFieldList = fieldList
-      }
+      },
+      handleDataSetDetail(record){
+        console.info("数据集record.dtText = " + record.dtText);
+        this.visible = true;
+        this.modalTitle = record.dtName;
+        this.dataSetContent = record.dtText;
+      },
+      //关闭数据集详情窗口
+      handleOk(){
+        this.visible = false;
+      },
     }
   }
 </script>

@@ -5,11 +5,11 @@
         <a-row>
           <a-col :span="10">
             <a-radio-group :value="barType" @change="statisticst">
-              <a-radio-button value="WordSegmentation">{{ShowReloadModel}}分词统计</a-radio-button>
-              <a-radio-button value="WordSegmentation_N">{{ShowReloadModel}}名词统计</a-radio-button>
+              <a-radio-button value="WordSegmentation">分词统计</a-radio-button>
+              <a-radio-button value="WordSegmentation_N">名词统计</a-radio-button>
             </a-radio-group>
           </a-col>
-          <bar class="statistic" title="分词结果" :dataSource="countSource" :height="400"/>
+          <bar class="statistic" :title="ShowReloadModel" :dataSource="countSource" :height="400"/>
         </a-row>
       </a-tab-pane>
 
@@ -17,11 +17,11 @@
         <a-row :gutter="24">
           <a-col :span="8">
             <a-radio-group :value="pieType" @change="statisticst">
-              <a-radio-button value="WordSegmentation">{{ShowReloadModel}}分词统计</a-radio-button>
-              <a-radio-button value="WordSegmentation_N">{{ShowReloadModel}}名词统计</a-radio-button>
+              <a-radio-button value="WordSegmentation">分词统计</a-radio-button>
+              <a-radio-button value="WordSegmentation_N">名词统计</a-radio-button>
             </a-radio-group>
           </a-col>
-          <pie class="statistic" title="分词结果" :dataSource="countSource" :height="450"/>
+          <pie class="statistic" :title="ShowReloadModel" :dataSource="countSource" :height="450"/>
         </a-row>
       </a-tab-pane>
     </a-tabs>
@@ -80,6 +80,7 @@
           getThulacWS:"/jeecg-demo/mynlp/thulac/thulacWS",
         },
         initShow:"",
+        chartTitle:"分词结果"
       }
     },
     methods: {
@@ -87,11 +88,11 @@
         const loding = message.loading('模型加载中，请稍后...',0);
         putNlpAction(url,param,dsJsonString).then((res) => {
           loding();
-          message.success('模型加载成功！');
-          this.ShowReloadModel = this.ShowModel;
           console.info("res.success = " + res.success);
           if (res.success) {
-            console.info(res);
+            message.success('模型加载成功！',2);
+            this.ShowReloadModel = this.ShowModel + "分词结果";
+            console.info("请求结果res = " + res);
             let json_Data = JSON.parse(res.result);
             let json_DataSet = json_Data.data;
             this.countSource = [];  //在每次重新分词前刷新数据源数组（置空）
@@ -110,16 +111,17 @@
               this.getWSData(json_DataSet);
             }
           }else{
-            let that = this;
-            that.$message.warning(res.message);
+            message.warning('请求超时，请重试！',2)
+            // let that = this;
+            // that.$message.warning(res.message);
           }
         })
       },
       getWSData(data){
-        console.info("筛选后的数据json_DataSet=" + data);
-        console.info("checked=" + this.checked);
+        console.info("筛选后的数据json_DataSet = " + data);
+        console.info("checked = " + this.checked);
         if(data.length ===  0){
-          message.warning("分词结果中不含指定词性！")
+          message.warning("分词结果中不含指定词性！",2)
         }else{
           let wordOrNature = "";
           for (let i = 0; i < data.length; i++) {

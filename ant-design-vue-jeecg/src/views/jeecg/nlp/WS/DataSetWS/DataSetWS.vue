@@ -58,6 +58,7 @@
   import WSIndex from '@/views/jeecg/nlp/WS/WSIndex.vue'
   import PartOfSpeech from '@/views/jeecg/nlp/WS/PartOfSpeech/PartOfSpeech.vue'
   import { getAction } from '@/api/manage'  //调用main.js中的通用请求方法
+  import {message} from "ant-design-vue";
 
     export default {
         name: "DataSetWS",
@@ -163,8 +164,9 @@
                 this.dataSets = res.result.records;
               }
             }else{
-              var that = this;
-              that.$message.warning(res.message);
+              message.warning('请求超时，请重试！',2)
+              //var that = this;
+              //that.$message.warning(res.message);
             }
           })
         },

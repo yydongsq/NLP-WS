@@ -314,7 +314,7 @@ export const JeecgListMixin = {
               title: message,
               content: (<div>
                   <span>{msg}</span><br/>
-                  <span>具体详情请 <a href={href} target="_blank" download={fileName}>点击下载</a> </span>
+                  <span>具体详情 <a href={href} target="_blank" download={fileName}>点击下载</a> </span>
                 </div>
               )
             })
