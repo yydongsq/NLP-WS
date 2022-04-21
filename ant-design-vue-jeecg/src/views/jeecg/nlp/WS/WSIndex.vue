@@ -124,8 +124,10 @@
           message.warning("分词结果中不含指定词性！",2)
         }else{
           let wordOrNature = "";
+          let DataSetResultAll = "";
           for (let i = 0; i < data.length; i++) {
             wordOrNature = this.checked === true ? data[i].word + "/" + data[i].nature : data[i].word;
+            DataSetResultAll += " [ " + wordOrNature + " ] ";
             if(this.tabStatus === "bar"){
               this.countSource.push({
                 x: wordOrNature,
@@ -138,6 +140,8 @@
               })
             }
           }
+          //DataSetResult是在父组件on监听的方法，第二个参数DataSetResultAll是需要传的值
+          this.$emit('DataSetResult', DataSetResultAll);
         }
       },
       // 选择统计图类别

@@ -41,6 +41,7 @@
               <a-button type="primary" @click="searchPartOfSpeech" icon="question-circle">词性说明</a-button>
               <a-button type="primary" @click="searchDataSet" icon="file-text" style="margin-left: 8px">查看数据集</a-button>
               <a-button type="primary" @click="searchQuery" icon="search" style="margin-left: 8px">进行分词</a-button>
+              <a-button type="primary" @click="searchPSResult" icon="file-text" style="margin-left: 8px">查看分词结果</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
             </span>
           </a-col>
@@ -49,8 +50,10 @@
       <a-modal v-model:visible="visible" :title="modalTitle" @ok="handleOk">
         <PartOfSpeech v-show="PSVisible"></PartOfSpeech>
         <div v-show="DataSetVisible">{{dataSetContent}}</div>
+        <div v-show="DataSetResultVisible">{{dataSetResultContent}}</div>
       </a-modal>
-      <WSIndex :ShowModel = "ShowModel" :DataSet = "DataSet" :dataSetId = "dataSetId" :checked = "checked"></WSIndex>
+      <!-- 引入子组件 定义一个on的方法监听子组件的状态-->
+      <WSIndex :ShowModel = "ShowModel" :DataSet = "DataSet" :dataSetId = "dataSetId" :checked = "checked" v-on:DataSetResult="DataSetResult"></WSIndex>
     </div>
     <!-- 查询区域-END -->
 </template>
@@ -77,10 +80,12 @@
           models:[],  //模型下拉列表数组
           dataSets:[],  //数据集名称下拉列表数组
           dataSetContent:"",  //数据集内容
+          dataSetResultContent:"",  //分词结果内容
           dataSetId:"", //选中的数据集id
           modalTitle:"",  //对话框标题
-          PSVisible:false,
-          DataSetVisible:false,
+          PSVisible:false,  //分词标注集展示关闭
+          DataSetVisible:false, //数据集展示关闭
+          DataSetResultVisible:false, //分词结果展示关闭
           url: {
             getModelData:"/jeecg-demo/mynlp/tbNlpModel/list", //请求后台模型数据API接口
             getDataSetData:"/jeecg-demo/mynlp/tbNlpDataset/list", //请求后台数据集数据API接口
@@ -121,6 +126,7 @@
               this.modalTitle = this.DataSetName;
               this.visible = true;
               this.PSVisible = false;
+              this.DataSetResultVisible = false;
               this.DataSetVisible = true;
             }
           })
@@ -133,8 +139,9 @@
         searchPartOfSpeech(){
           this.modalTitle = "863词性标注集";
           this.visible = true;
-          this.PSVisible = true;
           this.DataSetVisible = false;
+          this.DataSetResultVisible = true;
+          this.PSVisible = true;
         },
         //关闭词性说明对话框窗口
         handleOk(){
@@ -188,6 +195,22 @@
           this.dataSetId = value;
           this.DataSetName = obj.dtName;
           this.dataSetContent = obj.dtText;
+        },
+        //查看分词结果内容
+        searchPSResult(){
+          if(this.dataSetResultContent !== ''){
+            this.modalTitle = this.DataSetName;
+            this.visible = true;
+            this.DataSetVisible = false;
+            this.PSVisible = false;
+            this.DataSetResultVisible = true;
+          }else{
+            message.warning("请先进行分词！",2);
+          }
+        },
+        //子组件传值给父组件(dataSetResult就是子组件传过来的值)
+        DataSetResult(dataSetResult){
+          this.dataSetResultContent = dataSetResult;
         }
       }
     }

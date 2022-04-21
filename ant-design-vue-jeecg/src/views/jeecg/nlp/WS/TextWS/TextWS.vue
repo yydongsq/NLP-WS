@@ -37,15 +37,17 @@
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchPartOfSpeech" icon="question-circle">词性说明</a-button>
               <a-button type="primary" @click="searchQuery" icon="search" style="margin-left: 8px">进行分词</a-button>
+              <a-button type="primary" @click="searchPSResult" icon="file-text" style="margin-left: 8px">查看分词结果</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
             </span>
         </a-col>
       </a-row>
     </a-form>
-    <a-modal v-model:visible="visible" title="863词性标注集" @ok="handleOk">
-      <PartOfSpeech></PartOfSpeech>
+    <a-modal v-model:visible="visible" :title="modalTitle" @ok="handleOk">
+      <PartOfSpeech v-show="PSVisible"></PartOfSpeech>
+      <div v-show="DataSetResultVisible">{{dataSetResultContent}}</div>
     </a-modal>
-    <WSIndex :ShowModel = "ShowModel" :DataSet = "DataSet" :checked = "checked"></WSIndex>
+    <WSIndex :ShowModel = "ShowModel" :DataSet = "DataSet" :checked = "checked" v-on:DataSetResult="DataSetResult"></WSIndex>
   </div>
 </template>
 
@@ -70,6 +72,10 @@
         DataSet: '',
         ShowModel:'',
         models:[],
+        modalTitle:"",  //对话框标题
+        PSVisible:false,  //分词标注集展示关闭
+        DataSetResultVisible:false, //分词结果展示关闭
+        dataSetResultContent:"",  //分词结果内容
         url: {
           getModelData:"/jeecg-demo/mynlp/tbNlpModel/list",
         },
@@ -99,7 +105,10 @@
       },
       //是否弹出词性说明对话框
       searchPartOfSpeech(){
+        this.modalTitle = "863词性标注集";
         this.visible = true;
+        this.DataSetResultVisible = false;
+        this.PSVisible = true;
       },
       //关闭词性说明对话框窗口
       handleOk(){
@@ -131,6 +140,21 @@
       },
       handleModelChange(value){
         this.ModelName = value;
+      },
+      //查看分词结果内容
+      searchPSResult(){
+        if(this.dataSetResultContent !== ''){
+          this.modalTitle = "分词结果";
+          this.visible = true;
+          this.PSVisible = false;
+          this.DataSetResultVisible = true;
+        }else{
+          message.warning("请先进行分词！",2);
+        }
+      },
+      //子组件传值给父组件(dataSetResult就是子组件传过来的值)
+      DataSetResult(dataSetResult){
+        this.dataSetResultContent = dataSetResult;
       }
     }
   }
