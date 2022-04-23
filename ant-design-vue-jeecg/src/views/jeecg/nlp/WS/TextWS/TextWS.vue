@@ -35,9 +35,9 @@
         </a-col>
         <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
-              <a-button type="primary" @click="searchPartOfSpeech" icon="question-circle">词性说明</a-button>
-              <a-button type="primary" @click="searchQuery" icon="search" style="margin-left: 8px">进行分词</a-button>
-              <a-button type="primary" @click="searchPSResult" icon="file-text" style="margin-left: 8px">查看分词结果</a-button>
+              <a-button type="primary" @click="searchQuery" icon="search">进行分词</a-button>
+              <a-button type="primary" @click="searchPSResult" icon="file-search" style="margin-left: 8px">查看分词结果</a-button>
+              <a-button type="primary" @click="searchPartOfSpeech" icon="question-circle" style="margin-left: 8px">词性说明</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
             </span>
         </a-col>
@@ -47,7 +47,13 @@
       <PartOfSpeech v-show="PSVisible"></PartOfSpeech>
       <div v-show="DataSetResultVisible">{{dataSetResultContent}}</div>
     </a-modal>
-    <WSIndex :ShowModel = "ShowModel" :DataSet = "DataSet" :checked = "checked" v-on:DataSetResult="DataSetResult"></WSIndex>
+    <WSIndex
+      :ShowModel = "ShowModel"
+      :DataSet = "DataSet"
+      :checked = "checked"
+      ref="child"
+      v-on:DataSetResult="DataSetResult">
+    </WSIndex>
   </div>
 </template>
 
@@ -93,9 +99,15 @@
         this.form.validateFields((err, values) => {
           //判断必填项校验是否通过
           if (!err) {
-            this.DataSet = this.DataContent;
-            this.ShowModel = this.ModelName;
-            console.log(values);
+            //判断在上一次调用模型失败之后再次进行分词有没有更改数据集和模型，以防止引起监视属性改变而重复调用模型
+            if( this.DataSet === this.DataContent && this.ShowModel === this.ModelName){
+              //在调用超时再次点击进行分词调用子组件的方法尝试重新进行分词
+              this.$refs.child.getUrl("WordSegmentation",{});
+            }else{
+              this.DataSet = this.DataContent;
+              this.ShowModel = this.ModelName;
+              console.log(values);
+            }
           }
         })
       },
@@ -154,7 +166,11 @@
       },
       //子组件传值给父组件(dataSetResult就是子组件传过来的值)
       DataSetResult(dataSetResult){
-        this.dataSetResultContent = dataSetResult;
+        if(dataSetResult !== false){
+          this.dataSetResultContent = dataSetResult;
+        }else{
+          //调用超时
+        }
       }
     }
   }

@@ -2,6 +2,7 @@ package org.jeecg.modules.demo.mynlp.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.jeecg.modules.demo.mynlp.entity.TbNlpDataset;
 import org.jeecg.modules.demo.mynlp.entity.TbNlpModel;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +14,4 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TbNlpModelMapper extends BaseMapper<TbNlpModel> {
-
 }

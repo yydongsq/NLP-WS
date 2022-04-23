@@ -12,5 +12,4 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface TbNlpDatasetMapper extends BaseMapper<TbNlpDataset> {
-    int insert(TbNlpDataset entity);
 }

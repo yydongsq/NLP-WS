@@ -16,4 +16,12 @@ public interface ITbNlpDatasetService extends IService<TbNlpDataset> {
      * @return
      */
     boolean save(TbNlpDataset entity);
+
+    /**
+     * 编辑
+     * @param entity
+     * @return
+     */
+    @Override
+    boolean updateById(TbNlpDataset entity);
 }

@@ -11,4 +11,19 @@ import org.jeecg.modules.demo.mynlp.entity.TbNlpModel;
  */
 public interface ITbNlpModelService extends IService<TbNlpModel> {
 
+
+    /**
+     * 保存
+     * @param entity
+     * @return
+     */
+    boolean save(TbNlpModel entity);
+
+    /**
+     * 编辑
+     * @param entity
+     * @return
+     */
+    @Override
+    boolean updateById(TbNlpModel entity);
 }

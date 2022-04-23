@@ -112,8 +112,8 @@
             }
           }else{
             message.warning('请求超时，请重试！',2)
-            // let that = this;
-            // that.$message.warning(res.message);
+            //DataSetResult是在父组件on监听的方法，第二个参数DataSetResultAll是需要传的值
+            this.$emit('DataSetResult', false);
           }
         })
       },
@@ -228,18 +228,13 @@
           };
           url = this.url.getLtpWS;
         }
-        // if(type === 'WordSegmentation_n' && showModel === "HanLP"){
-        //   param = {
-        //     dataSetId:dataSetId,
-        //     type:"get_n"
-        //   };
-        //   url = this.url.getHanLPWS;
-        // }
         if(url !== ""){
           console.info("转换为JSON字符串的数据集dsJsonString = " + dsJsonString);
           console.info("分词类型type = " + type);
           //type为分词类型
           this.loadDate(url,type,param,dsJsonString);
+        }else{
+          message.warning("该模型未封装！",2);
         }
       },
     },
