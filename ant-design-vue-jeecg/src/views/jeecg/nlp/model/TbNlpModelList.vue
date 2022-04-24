@@ -104,6 +104,16 @@
               <a-menu-item>
                 <a @click="handleDetail(record)">详情</a>
               </a-menu-item>
+              <a-menu-item v-if="record.modelStatus === '已启用'">
+                <a-popconfirm title="确认禁用吗?" @confirm="() => handleStatus(record,'已禁用')">
+                  <a>禁用</a>
+                </a-popconfirm>
+              </a-menu-item>
+              <a-menu-item v-else>
+                <a-popconfirm title="确认启用吗?" @confirm="() => handleStatus(record,'已启用')">
+                  <a>启用</a>
+                </a-popconfirm>
+              </a-menu-item>
               <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
@@ -126,7 +136,17 @@
   import { mixinDevice } from '@/utils/mixin'
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import TbNlpModelModal from './modules/TbNlpModelModal'
+  import { httpAction, getAction } from '@/api/manage'
 
+  /*
+    * 在你已经写好了构造器后，需要增加方法或者临时的活动时使用的方法，这时用混入会减少源代码的污染。
+    * 很多地方都会用到的公用方法，用混入的方法可以减少代码量，实现代码重用。
+    * 在和组件的数据或方法发生冲突时以组件数据优先（组件的data中变量会覆盖混入对象的data中变量）
+    * 如果在引用mixins的同时，在组件中重复定义相同的方法，则mixins中的方法会被覆盖。
+    * mixins是在引入组件之后，则是将组件内部的内容如data等方法、method等属性与父组件相应内容进行合并。相当于在引入后，父组件的各种属性方法都被扩充了。
+    * 实例对象即组件或者Vue实例对象中，仍然可以定义相同函数名的方法进行覆盖，有点像子类和父类的感觉。
+    * 可以定义共用的变量，在每个组件中使用，引入组件中之后，各个变量是相互独立的，值的修改在组件中不会相互影响。
+  * */
   export default {
     name: 'TbNlpModelList',
     mixins:[JeecgListMixin, mixinDevice],
@@ -218,7 +238,7 @@
           deleteBatch: "/jeecg-demo/mynlp/tbNlpModel/deleteBatch",
           exportXlsUrl: "/jeecg-demo/mynlp/tbNlpModel/exportXls",
           importExcelUrl: "jeecg-demo/mynlp/tbNlpModel/importExcel",
-
+          encapsulation: "/jeecg-demo/mynlp/tbNlpModel/edit",
         },
         dictOptions:{},
         superFieldList:[],
@@ -249,6 +269,20 @@
         fieldList.push({type:'string',value:'modelStatus',text:'模型状态',dictCode:''})
         fieldList.push({type:'string',value:'memo',text:'备注',dictCode:''})
         this.superFieldList = fieldList
+      },
+      handleStatus(record,status){
+        record.modelStatus = status;
+        let httpUrl = this.url.encapsulation;
+        httpAction(httpUrl,record,"put").then((res)=>{
+          if(res.success){
+            this.$message.success(res.message);
+            this.modalFormOk('ok');
+          }else{
+            this.$message.warning(res.message);
+          }
+        }).finally(() => {
+          this.confirmLoading = false;
+        })
       }
     }
   }

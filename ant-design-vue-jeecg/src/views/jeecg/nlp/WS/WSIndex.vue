@@ -101,11 +101,9 @@
             }
             if(type === 'WordSegmentation_N'){
               for (let i = 0; i < json_DataSet.length; i++) {
-                //alert("前 = " + i);
                  if(json_DataSet[i].nature !== "n" && json_DataSet[i].nature !== "ns"){
                    json_DataSet.splice(i, 1);//从i开始（包括i，i从0开始）删除一个元素
                    i--; //删除数组指定元素之后，将i重新定位在删除的位置跟此时位置上的新元素重新比较
-                   //alert("后 = " + i);
                  }
               }
               this.getWSData(json_DataSet);
@@ -118,7 +116,6 @@
         })
       },
       getWSData(data){
-        console.info("筛选后的数据json_DataSet = " + data);
         console.info("checked = " + this.checked);
         if(data.length ===  0){
           message.warning("分词结果中不含指定词性！",2)

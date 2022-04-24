@@ -1,6 +1,9 @@
 package org.jeecg.modules.demo.mynlp.controller;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jeecg.common.api.vo.Result;
@@ -12,9 +15,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.modules.demo.mynlp.entity.TbNlpModel;
+import org.jeecg.modules.demo.mynlp.mapper.TbNlpModelMapper;
 import org.jeecg.modules.demo.mynlp.service.ITbNlpModelService;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.hash.HashMapper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import io.swagger.annotations.Api;
@@ -35,6 +40,9 @@ public class TbNlpModelController extends JeecgController<TbNlpModel, ITbNlpMode
 	@Autowired
 	private ITbNlpModelService tbNlpModelService;
 
+	 @Autowired
+	 TbNlpModelMapper tbNlpModelMapper;
+
 	/**
 	 * 分页列表查询
 	 *
@@ -51,11 +59,33 @@ public class TbNlpModelController extends JeecgController<TbNlpModel, ITbNlpMode
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
 								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
 								   HttpServletRequest req) {
-		QueryWrapper<TbNlpModel> queryWrapper = QueryGenerator.initQueryWrapper(tbNlpModel, req.getParameterMap());
+		Map<String, String[]> parameterMap = req.getParameterMap();
+		QueryWrapper<TbNlpModel> queryWrapper = QueryGenerator.initQueryWrapper(tbNlpModel, parameterMap);
 		Page<TbNlpModel> page = new Page<TbNlpModel>(pageNo, pageSize);
 		IPage<TbNlpModel> pageList = tbNlpModelService.page(page, queryWrapper);
 		return Result.OK(pageList);
 	}
+
+
+	 /**
+	  *
+	  * @param tbNlpModel
+	  * @param status
+	  * @param req
+	  * @return
+	  */
+	 @AutoLog(value = "自然语言分词模型-通过模型状态获取列表")
+	 @ApiOperation(value="自然语言分词模型-通过模型状态获取列表", notes="自然语言分词模型-通过模型状态获取列表")
+	 @GetMapping(value = "/listByStatus")
+	 public Result<List<TbNlpModel>> queryListByStatus(TbNlpModel tbNlpModel,
+													@RequestParam(name="status", defaultValue="已启用") String status,
+													HttpServletRequest req) {
+		 HashMap<String, String[]> map = new HashMap<>();
+		 QueryWrapper<TbNlpModel> queryWrapper = new QueryWrapper<>();
+		 queryWrapper.eq("model_status", "已启用");
+		 List<TbNlpModel> tbNlpModels = tbNlpModelMapper.selectList(queryWrapper);
+		 return Result.OK(tbNlpModels);
+	 }
 
 	/**
 	 *   添加

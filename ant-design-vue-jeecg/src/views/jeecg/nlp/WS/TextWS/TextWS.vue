@@ -83,7 +83,7 @@
         DataSetResultVisible:false, //分词结果展示关闭
         dataSetResultContent:"",  //分词结果内容
         url: {
-          getModelData:"/jeecg-demo/mynlp/tbNlpModel/list",
+          getModelData:"/jeecg-demo/mynlp/tbNlpModel/listByStatus",
         },
         form: this.$form.createForm(this), // 只有这样注册后，才能通过表单拉取数据
       }
@@ -142,7 +142,7 @@
         getAction(url,param).then((res) => {
           console.info("res.success = " + res.success);
           if (res.success) {
-            this.models = res.result.records;
+            this.models = res.result;
           }else{
             message.warning('请求超时，请重试！',2)
             //var that = this;

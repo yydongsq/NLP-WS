@@ -96,16 +96,19 @@
           url: {
             getModelData:"/jeecg-demo/mynlp/tbNlpModel/list", //请求后台模型数据API接口
             getDataSetData:"/jeecg-demo/mynlp/tbNlpDataset/list", //请求后台数据集数据API接口
-            getDataSetDataById:"/jeecg-demo/mynlp/tbNlpDataset/queryById", //请求后台数据集数据API接口
+            getModelDataByStatus:"/jeecg-demo/mynlp/tbNlpModel/listByStatus", //根据模型状态查询列表
           },
           form: this.$form.createForm(this), // 只有这样注册后，才能通过表单拉取数据
         }
       },
       //在页面创建成功后执行加载下拉列表的数据
       created() {
-        let modelUrl = this.url.getModelData;
+        let modelUrl = this.url.getModelDataByStatus;
         let dataSetUrl = this.url.getDataSetData;
-        this.loadData(modelUrl,"model",null);
+        let param = {
+          'model_status':"已启用"
+        }
+        this.loadData(modelUrl,"model",param);
         this.loadData(dataSetUrl,"dataSet",null);
       },
       methods: {
@@ -178,7 +181,7 @@
             console.info("res.success = " + res.success);
             if (res.success) {
               if(type === "model"){
-                this.models = res.result.records;
+                this.models = res.result;
               }
               if(type === "dataSet"){
                 this.dataSets = res.result.records;
