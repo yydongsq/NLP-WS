@@ -226,12 +226,15 @@
           url = this.url.getLtpWS;
         }
         if(url !== ""){
-          console.info("转换为JSON字符串的数据集dsJsonString = " + dsJsonString);
           console.info("分词类型type = " + type);
           //type为分词类型
           this.loadDate(url,type,param,dsJsonString);
         }else{
-          message.warning("该模型未封装！",2);
+          if(showModel === ""){
+            message.warning("请先进行分词！",2);
+          }else{
+            message.warning("该模型未封装！",2);
+          }
         }
       },
     },

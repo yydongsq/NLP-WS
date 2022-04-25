@@ -102,10 +102,10 @@
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a @click="handleDataSetDetail(record)">查看数据集详情</a>
+                <a @click="handleDataSetDetail(record)">数据集</a>
               </a-menu-item>
               <a-menu-item>
-                <a @click="handleDetail(record)">查看表单详情</a>
+                <a @click="handleDetail(record)">详情</a>
               </a-menu-item>
               <a-menu-item>
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">

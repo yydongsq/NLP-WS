@@ -27,7 +27,7 @@ public class TbNlpModelServiceImpl extends ServiceImpl<TbNlpModelMapper, TbNlpMo
     public boolean save(TbNlpModel entity) {
         entity.setModelUpdateBy(entity.getModelCreatBy());
         entity.setModelUpdateTime(new Date());
-        entity.setModelStatus("未封装");
+        entity.setModelStatus("已禁用");
         tbNlpModelMapper.insert(entity);
         return false;
     }
