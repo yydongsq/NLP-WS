@@ -66,6 +66,8 @@ public class TbNlpPosDetail implements Serializable {
 	/**词性创建时间*/
 	@Excel(name = "词性创建时间", width = 15)
     @ApiModelProperty(value = "词性创建时间")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private java.util.Date posCreateTime;
 	/**词性更新人*/
 	@Excel(name = "词性更新人", width = 15)

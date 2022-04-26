@@ -92,6 +92,14 @@ public class TbNlpModel implements Serializable {
 	@Excel(name = "模型状态", width = 15)
     @ApiModelProperty(value = "模型状态")
     private String modelStatus;
+	/**词性标注集ID*/
+	@Excel(name = "词性标注集ID", width = 15)
+    @ApiModelProperty(value = "词性标注集ID")
+    private String modelPosId;
+	/**词性标注集名称*/
+	@Excel(name = "词性标注集名称", width = 15)
+    @ApiModelProperty(value = "词性标注集名称")
+    private String modelPosName;
 	/**备注*/
 	@Excel(name = "备注", width = 15)
     @ApiModelProperty(value = "备注")

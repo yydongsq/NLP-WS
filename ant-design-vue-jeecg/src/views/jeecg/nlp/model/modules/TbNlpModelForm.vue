@@ -39,6 +39,11 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
+            <a-form-model-item label="词性标注集" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="modelPosName">
+              <a-input v-model="model.modelPosName" placeholder="请输入词性标注集"  ></a-input>
+            </a-form-model-item>
+          </a-col>
+          <a-col :span="24">
             <a-form-model-item label="备注" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="memo">
               <a-textarea v-model="model.memo" rows="4" placeholder="请输入备注" />
             </a-form-model-item>
@@ -100,6 +105,9 @@
            ],
            modelCreatTime: [
               { required: true, message: '请输入模型创建时间!'},
+           ],
+          modelPosName: [
+              { required: true, message: '请输入词性标注集!'},
            ],
         },
         url: {

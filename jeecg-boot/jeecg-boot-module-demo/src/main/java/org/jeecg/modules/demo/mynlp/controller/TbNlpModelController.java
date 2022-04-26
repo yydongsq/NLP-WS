@@ -40,8 +40,6 @@ public class TbNlpModelController extends JeecgController<TbNlpModel, ITbNlpMode
 	@Autowired
 	private ITbNlpModelService tbNlpModelService;
 
-	 @Autowired
-	 TbNlpModelMapper tbNlpModelMapper;
 
 	/**
 	 * 分页列表查询
@@ -63,6 +61,7 @@ public class TbNlpModelController extends JeecgController<TbNlpModel, ITbNlpMode
 		QueryWrapper<TbNlpModel> queryWrapper = QueryGenerator.initQueryWrapper(tbNlpModel, parameterMap);
 		Page<TbNlpModel> page = new Page<TbNlpModel>(pageNo, pageSize);
 		IPage<TbNlpModel> pageList = tbNlpModelService.page(page, queryWrapper);
+		//Page<TbNlpModel> tbNlpModelPage = tbNlpModelMapper.selectPage(page, queryWrapper);
 		return Result.OK(pageList);
 	}
 
@@ -80,10 +79,9 @@ public class TbNlpModelController extends JeecgController<TbNlpModel, ITbNlpMode
 	 public Result<List<TbNlpModel>> queryListByStatus(TbNlpModel tbNlpModel,
 													@RequestParam(name="status", defaultValue="已启用") String status,
 													HttpServletRequest req) {
-		 HashMap<String, String[]> map = new HashMap<>();
 		 QueryWrapper<TbNlpModel> queryWrapper = new QueryWrapper<>();
 		 queryWrapper.eq("model_status", "已启用");
-		 List<TbNlpModel> tbNlpModels = tbNlpModelMapper.selectList(queryWrapper);
+		 List<TbNlpModel> tbNlpModels = tbNlpModelService.selectListByStatus(queryWrapper);
 		 return Result.OK(tbNlpModels);
 	 }
 

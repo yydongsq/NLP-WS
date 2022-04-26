@@ -219,6 +219,11 @@
             dataIndex: 'modelStatus'
           },
           {
+            title:'词性标注集名称',
+            align:"center",
+            dataIndex: 'modelPosName'
+          },
+          {
             title:'备注',
             align:"center",
             dataIndex: 'memo'
@@ -267,6 +272,7 @@
         fieldList.push({type:'string',value:'modelUpdateBy',text:'模型更新人',dictCode:''})
         fieldList.push({type:'datetime',value:'modelUpdateTime',text:'模型更新时间'})
         fieldList.push({type:'string',value:'modelStatus',text:'模型状态',dictCode:''})
+        fieldList.push({type:'string',value:'modelPosName',text:'词性标注集名称',dictCode:''})
         fieldList.push({type:'string',value:'memo',text:'备注',dictCode:''})
         this.superFieldList = fieldList
       },

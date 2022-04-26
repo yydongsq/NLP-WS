@@ -1,5 +1,6 @@
 package org.jeecg.modules.demo.mynlp.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.jeecg.modules.demo.mynlp.entity.TbNlpDataset;
 import org.jeecg.modules.demo.mynlp.entity.TbNlpModel;
 import org.jeecg.modules.demo.mynlp.mapper.TbNlpDatasetMapper;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Description: 自然语言分词模型
@@ -38,5 +40,11 @@ public class TbNlpModelServiceImpl extends ServiceImpl<TbNlpModelMapper, TbNlpMo
         entity.setModelUpdateTime(new Date());
         tbNlpModelMapper.updateById(entity);
         return false;
+    }
+
+    @Override
+    public List<TbNlpModel> selectListByStatus(QueryWrapper<TbNlpModel> queryWrapper) {
+        List<TbNlpModel> tbNlpModels = tbNlpModelMapper.selectList(queryWrapper);
+        return tbNlpModels;
     }
 }

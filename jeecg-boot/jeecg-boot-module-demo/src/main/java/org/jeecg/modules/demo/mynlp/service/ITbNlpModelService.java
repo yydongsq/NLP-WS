@@ -1,7 +1,10 @@
 package org.jeecg.modules.demo.mynlp.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.jeecg.modules.demo.mynlp.entity.TbNlpModel;
+
+import java.util.List;
 
 /**
  * @Description: 自然语言分词模型
@@ -26,4 +29,11 @@ public interface ITbNlpModelService extends IService<TbNlpModel> {
      */
     @Override
     boolean updateById(TbNlpModel entity);
+
+    /**
+     * 通过模型状态查询列表
+     * @param queryWrapper
+     * @return
+     */
+    List<TbNlpModel> selectListByStatus(QueryWrapper<TbNlpModel> queryWrapper);
 }

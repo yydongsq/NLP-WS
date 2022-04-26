@@ -57,6 +57,8 @@ public class TbNlpPosPage {
 	/**词性标注集创建时间*/
 	@Excel(name = "词性标注集创建时间", width = 15)
 	@ApiModelProperty(value = "词性标注集创建时间")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd",timezone="GMT+8")
     private java.util.Date posCreateTime;
 	/**词性标注集更新人*/
 	@Excel(name = "词性标注集更新人", width = 15)
