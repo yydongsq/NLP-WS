@@ -238,7 +238,7 @@
           deleteBatch: "/jeecg-demo/mynlp/tbNlpModel/deleteBatch",
           exportXlsUrl: "/jeecg-demo/mynlp/tbNlpModel/exportXls",
           importExcelUrl: "jeecg-demo/mynlp/tbNlpModel/importExcel",
-          encapsulation: "/jeecg-demo/mynlp/tbNlpModel/edit",
+          modelDisable: "/jeecg-demo/mynlp/tbNlpModel/edit",
         },
         dictOptions:{},
         superFieldList:[],
@@ -272,7 +272,7 @@
       },
       handleStatus(record,status){
         record.modelStatus = status;
-        let httpUrl = this.url.encapsulation;
+        let httpUrl = this.url.modelDisable;
         httpAction(httpUrl,record,"put").then((res)=>{
           if(res.success){
             this.$message.success(res.message);

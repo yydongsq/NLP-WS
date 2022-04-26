@@ -137,7 +137,7 @@
               })
             }
           }
-          //DataSetResult是在父组件on监听的方法，第二个参数DataSetResultAll是需要传的值
+          //DataSetResult是在父组件引用改组件时定义的v-on（或@）监听方法，第二个参数DataSetResultAll是需要传的值
           this.$emit('DataSetResult', DataSetResultAll);
         }
       },

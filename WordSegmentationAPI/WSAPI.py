@@ -38,7 +38,9 @@ def select_WSType_byThulac(text,WS_type):
 # Jieba
 def select_WSType_byJieba(text,WS_type):
     if WS_type == "sentence":
-        jieba.enable_paddle()   #启动paddle模式进行词性标注(Jieba使用ICTCLAS汉语词性标注集)
+         #启动paddle模式进行词性标注(Jieba使用ICTCLAS汉语词性标注集)
+         #paddle模式词性和专名类别标签集合中词性标签 24 个（小写字母），专名类别标签 4 个（大写字母）。
+        jieba.enable_paddle()
         words = pseg.cut(text,use_paddle=True)
         t = {}
         i = 0

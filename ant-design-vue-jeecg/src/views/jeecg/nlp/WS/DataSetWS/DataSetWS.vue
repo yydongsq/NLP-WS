@@ -52,8 +52,15 @@
         <div v-show="DataSetVisible">{{dataSetContent}}</div>
         <div v-show="DataSetResultVisible">{{dataSetResultContent}}</div>
       </a-modal>
-      <!-- 引入子组件 定义一个on的方法监听子组件的状态-->
-      <!-- 通过ref调用子组件的方法 -->
+      <!--
+       定义一个on的方法监听子组件的状态（接收子组件向父组件传值），此处v-on:DataSetResult也可以定义为@DataSetResult
+      -->
+      <!--
+       通过ref调用子组件的方法
+       ref被用来给元素或子组件注册引用信息。引用信息将会注册在父组件的 $refs对象上。如果在普通的 DOM 元素上使用，引用指向的就是 DOM 元素；如果用在子组件上，引用就指向该子组件实例
+       通俗的讲，ref特性就是为元素或子组件赋予一个ID引用,通过this.$refs.refName来访问元素或子组件的实例
+       this.$refs是一个对象，持有当前组件中注册过 ref特性的所有 DOM 元素和子组件实例
+       -->
       <WSIndex :ShowModel = "ShowModel"
                :DataSet = "DataSet"
                :dataSetId = "dataSetId"
