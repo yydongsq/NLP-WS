@@ -40,7 +40,13 @@
           </a-col>
           <a-col :span="24">
             <a-form-model-item label="词性标注集" :labelCol="labelCol" :wrapperCol="wrapperCol" prop="modelPosName">
-              <a-input v-model="model.modelPosName" placeholder="请输入词性标注集"  ></a-input>
+              <a-select
+                placeholder="请选择词性标注集"
+                v-model="model.modelPosName"
+                @change='handlePosChange'>
+                <a-select-option v-for="p in pos" :key="p.id" :value="p.id">{{p.posName}}</a-select-option>
+              </a-select>
+              <!--<a-input v-model="model.modelPosName" placeholder="请输入词性标注集"  ></a-input>-->
             </a-form-model-item>
           </a-col>
           <a-col :span="24">
@@ -58,6 +64,7 @@
 
   import { httpAction, getAction } from '@/api/manage'
   import { validateDuplicateValue } from '@/utils/util'
+  import {message} from "ant-design-vue";
 
   export default {
     name: 'TbNlpModelForm',
@@ -74,6 +81,7 @@
     data () {
       return {
         model:{
+          modelPosName:''
          },
         labelCol: {
           xs: { span: 24 },
@@ -107,13 +115,15 @@
               { required: true, message: '请输入模型创建时间!'},
            ],
           modelPosName: [
-              { required: true, message: '请输入词性标注集!'},
+              { required: true, message: '请选择词性标注集!'},
            ],
         },
+        pos:[],
         url: {
           add: "/jeecg-demo/mynlp/tbNlpModel/add",
           edit: "/jeecg-demo/mynlp/tbNlpModel/edit",
-          queryById: "/jeecg-demo/mynlp/tbNlpModel/queryById"
+          queryById: "/jeecg-demo/mynlp/tbNlpModel/queryById",
+          getPosData: "/jeecg-demo/mynlp/tbNlpPos/list"
         }
       }
     },
@@ -125,6 +135,10 @@
     created () {
        //备份model原始值
       this.modelDefault = JSON.parse(JSON.stringify(this.model));
+      if(this.disabled === false){
+        let posDataUrl = this.url.getPosData;
+        this.loadData(posDataUrl,null);
+      }
     },
     methods: {
       add () {
@@ -161,6 +175,32 @@
             })
           }
 
+        })
+      },
+      handlePosChange(value){
+        console.info("pos.id = " + value);
+        let obj = {};
+        //从当前dataSets数组中寻找
+        obj = this.pos.find(function (item) {
+          //判断id相等
+          return item.id === value;
+        });
+        //obj就是被选中的那个对象
+        this.model.modelPosId = value;
+        //如果直接给model.modelPosName赋值，会导致select上对应的数据绑定不生效（即选中option后不显示），因为vue 无法监听动态新增的属性的变化，需要用 $set 来为这些属性赋值。
+        //Vue无法监听新增的属性值的变化，需要通过set 来进行设置。或者在model:{}中手动加入所有属性。
+        this.$set(this.model, this.model.modelPosName, obj.modelPosName);
+        this.model.modelPosName = obj.modelPosName;
+      },
+      //发送axios异步请求加载数据
+      loadData(url,param) {
+        getAction(url,param).then((res) => {
+          console.info("res.success = " + res.success);
+          if (res.success) {
+            this.pos = res.result.records;
+          }else{
+            message.warning('请求超时，请重试！',2)
+          }
         })
       },
     }

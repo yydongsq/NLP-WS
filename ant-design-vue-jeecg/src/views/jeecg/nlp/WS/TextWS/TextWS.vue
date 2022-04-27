@@ -3,13 +3,13 @@
     <a-form layout="inline" @keyup.enter.native="searchQuery" :form="form">
       <a-row :gutter="24">
         <a-col :xl="5" :lg="7" :md="8" :sm="24">
-          <a-form-item label="数据集内容">
+          <a-form-item label="文本内容">
             <a-input
               v-decorator="[
                 'DataContent', // 给表单赋值或拉取表单时，该input对应的key
-                {rules: [{ required: true, message: '请输入数据集内容!' }]}
+                {rules: [{ required: true, message: '请输入文本内容!' }]}
                 ]"
-              placeholder="请输入数据集内容"
+              placeholder="请输入文本内容"
               v-model="DataContent">
             </a-input>
           </a-form-item>
