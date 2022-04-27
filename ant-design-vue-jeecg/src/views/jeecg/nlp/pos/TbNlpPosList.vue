@@ -164,6 +164,16 @@
             }
           },
           {
+            title:'词性标注集更新人',
+            align:"center",
+            dataIndex: 'posUpdateBy'
+          },
+          {
+            title:'词性标注集更新时间',
+            align:"center",
+            dataIndex: 'posUpdateTime',
+          },
+          {
             title:'备注',
             align:"center",
             dataIndex: 'memo'
@@ -205,7 +215,9 @@
         fieldList.push({type:'string',value:'posNo',text:'词性标注集编号',dictCode:''})
         fieldList.push({type:'string',value:'posName',text:'词性标注集名称',dictCode:''})
         fieldList.push({type:'string',value:'posCreateBy',text:'词性标注集创建人',dictCode:''})
-        fieldList.push({type:'date',value:'posCreateTime',text:'词性标注集创建时间'})
+        fieldList.push({type:'datetime',value:'posCreateTime',text:'词性标注集创建时间'})
+        fieldList.push({type:'string',value:'posUpdateBy',text:'词性标注集更新人',dictCode:''})
+        fieldList.push({type:'datetime',value:'posUpdateTime',text:'词性标注集更新时间'})
         fieldList.push({type:'string',value:'memo',text:'备注',dictCode:''})
         this.superFieldList = fieldList
       }

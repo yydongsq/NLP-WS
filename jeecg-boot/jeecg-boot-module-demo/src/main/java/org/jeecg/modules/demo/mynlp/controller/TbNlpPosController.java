@@ -3,10 +3,7 @@ package org.jeecg.modules.demo.mynlp.controller;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -112,6 +109,8 @@ public class TbNlpPosController {
 		if(tbNlpPosEntity==null) {
 			return Result.error("未找到对应数据");
 		}
+		tbNlpPos.setPosUpdateBy(tbNlpPos.getPosCreateBy());
+		tbNlpPos.setPosUpdateTime(new Date());
 		tbNlpPosService.updateMain(tbNlpPos, tbNlpPosPage.getTbNlpPosDetailList());
 		return Result.OK("编辑成功!");
 	}

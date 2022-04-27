@@ -81,7 +81,6 @@
     data () {
       return {
         model:{
-          modelPosName:''
          },
         labelCol: {
           xs: { span: 24 },
@@ -180,7 +179,7 @@
       handlePosChange(value){
         console.info("pos.id = " + value);
         let obj = {};
-        //从当前dataSets数组中寻找
+        //从当前pos数组中寻找
         obj = this.pos.find(function (item) {
           //判断id相等
           return item.id === value;
@@ -189,8 +188,10 @@
         this.model.modelPosId = value;
         //如果直接给model.modelPosName赋值，会导致select上对应的数据绑定不生效（即选中option后不显示），因为vue 无法监听动态新增的属性的变化，需要用 $set 来为这些属性赋值。
         //Vue无法监听新增的属性值的变化，需要通过set 来进行设置。或者在model:{}中手动加入所有属性。
-        this.$set(this.model, this.model.modelPosName, obj.modelPosName);
-        this.model.modelPosName = obj.modelPosName;
+        this.$set(this.model, this.model.modelPosName, obj.posName);
+        console.info("pos.posName = " + obj.posName);
+        this.model.modelPosName = obj.posName;
+        this.$forceUpdate();
       },
       //发送axios异步请求加载数据
       loadData(url,param) {

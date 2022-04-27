@@ -4,6 +4,8 @@ import org.jeecg.modules.demo.mynlp.entity.TbNlpPosDetail;
 import org.jeecg.modules.demo.mynlp.mapper.TbNlpPosDetailMapper;
 import org.jeecg.modules.demo.mynlp.service.ITbNlpPosDetailService;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 import java.util.List;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +18,26 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Service
 public class TbNlpPosDetailServiceImpl extends ServiceImpl<TbNlpPosDetailMapper, TbNlpPosDetail> implements ITbNlpPosDetailService {
-	
+
 	@Autowired
 	private TbNlpPosDetailMapper tbNlpPosDetailMapper;
-	
+
 	@Override
 	public List<TbNlpPosDetail> selectByMainId(String mainId) {
 		return tbNlpPosDetailMapper.selectByMainId(mainId);
+	}
+
+	@Override
+	public boolean save(TbNlpPosDetail entity) {
+		entity.setPosUpdateBy(entity.getPosCreateBy());
+		entity.setPosUpdateTime(new Date());
+		return false;
+	}
+
+	@Override
+	public boolean updateById(TbNlpPosDetail entity) {
+		entity.setPosUpdateBy(entity.getPosCreateBy());
+		entity.setPosUpdateTime(new Date());
+		return false;
 	}
 }

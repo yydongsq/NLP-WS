@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Collection;
 
@@ -26,7 +27,7 @@ public class TbNlpPosServiceImpl extends ServiceImpl<TbNlpPosMapper, TbNlpPos> i
 	private TbNlpPosMapper tbNlpPosMapper;
 	@Autowired
 	private TbNlpPosDetailMapper tbNlpPosDetailMapper;
-	
+
 	@Override
 	@Transactional
 	public void saveMain(TbNlpPos tbNlpPos, List<TbNlpPosDetail> tbNlpPosDetailList) {
@@ -44,10 +45,10 @@ public class TbNlpPosServiceImpl extends ServiceImpl<TbNlpPosMapper, TbNlpPos> i
 	@Transactional
 	public void updateMain(TbNlpPos tbNlpPos,List<TbNlpPosDetail> tbNlpPosDetailList) {
 		tbNlpPosMapper.updateById(tbNlpPos);
-		
+
 		//1.先删除子表数据
 		tbNlpPosDetailMapper.deleteByMainId(tbNlpPos.getId());
-		
+
 		//2.子表数据重新插入
 		if(tbNlpPosDetailList!=null && tbNlpPosDetailList.size()>0) {
 			for(TbNlpPosDetail entity:tbNlpPosDetailList) {
@@ -73,5 +74,19 @@ public class TbNlpPosServiceImpl extends ServiceImpl<TbNlpPosMapper, TbNlpPos> i
 			tbNlpPosMapper.deleteById(id);
 		}
 	}
-	
+
+	@Override
+	public boolean save(TbNlpPos entity) {
+		entity.setPosUpdateBy(entity.getPosCreateBy());
+		entity.setPosUpdateTime(new Date());
+		return false;
+	}
+
+	@Override
+	public boolean updateById(TbNlpPos entity) {
+		entity.setPosUpdateBy(entity.getPosCreateBy());
+		entity.setPosUpdateTime(new Date());
+		return false;
+	}
+
 }

@@ -1,5 +1,6 @@
 package org.jeecg.modules.demo.mynlp.service;
 
+import org.jeecg.modules.demo.mynlp.entity.TbNlpDataset;
 import org.jeecg.modules.demo.mynlp.entity.TbNlpPosDetail;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.List;
@@ -13,4 +14,19 @@ import java.util.List;
 public interface ITbNlpPosDetailService extends IService<TbNlpPosDetail> {
 
 	public List<TbNlpPosDetail> selectByMainId(String mainId);
+
+	/**
+	 * 保存
+	 * @param entity
+	 * @return
+	 */
+	boolean save(TbNlpPosDetail entity);
+
+	/**
+	 * 编辑
+	 * @param entity
+	 * @return
+	 */
+	@Override
+	boolean updateById(TbNlpPosDetail entity);
 }
