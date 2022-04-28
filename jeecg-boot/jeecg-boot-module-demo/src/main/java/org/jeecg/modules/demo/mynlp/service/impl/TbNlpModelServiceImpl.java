@@ -1,9 +1,7 @@
 package org.jeecg.modules.demo.mynlp.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.jeecg.modules.demo.mynlp.entity.TbNlpDataset;
 import org.jeecg.modules.demo.mynlp.entity.TbNlpModel;
-import org.jeecg.modules.demo.mynlp.mapper.TbNlpDatasetMapper;
 import org.jeecg.modules.demo.mynlp.mapper.TbNlpModelMapper;
 import org.jeecg.modules.demo.mynlp.service.ITbNlpModelService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,6 @@
 package org.jeecg.modules.demo.mynlp.controller;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +14,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
 import org.jeecg.modules.demo.mynlp.entity.TbNlpModel;
-import org.jeecg.modules.demo.mynlp.mapper.TbNlpModelMapper;
 import org.jeecg.modules.demo.mynlp.service.ITbNlpModelService;
 import org.jeecg.common.system.base.controller.JeecgController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.hash.HashMapper;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import io.swagger.annotations.Api;

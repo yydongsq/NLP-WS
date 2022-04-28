@@ -1,8 +1,6 @@
 package org.jeecg.modules.demo.mynlp.controller;
 
-import java.io.UnsupportedEncodingException;
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +32,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
-import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.jeecg.common.aspect.annotation.AutoLog;

@@ -3,7 +3,6 @@ package org.jeecg.modules.demo.mynlp.entity;
 
 import lombok.Data;
 
-import java.util.Objects;
 
 /**
  * @author sq

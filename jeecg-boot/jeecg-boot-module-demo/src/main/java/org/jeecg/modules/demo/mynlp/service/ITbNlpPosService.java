@@ -1,6 +1,5 @@
 package org.jeecg.modules.demo.mynlp.service;
 
-import org.jeecg.modules.demo.mynlp.entity.TbNlpDataset;
 import org.jeecg.modules.demo.mynlp.entity.TbNlpPosDetail;
 import org.jeecg.modules.demo.mynlp.entity.TbNlpPos;
 import com.baomidou.mybatisplus.extension.service.IService;
