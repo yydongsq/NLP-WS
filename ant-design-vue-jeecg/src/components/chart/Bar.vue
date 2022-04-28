@@ -6,6 +6,7 @@
       <v-axis/>
       <v-bar position="x*y"/>
     </v-chart>
+    <div>{{DataSetResultAll}}</div>
   </div>
 </template>
 
@@ -15,6 +16,10 @@
   export default {
     name: 'Bar',
     props: {
+      DataSetResultAll:{
+        type: String,
+        default: ''
+      },
       dataSource: {
         type: Array,
         required: true

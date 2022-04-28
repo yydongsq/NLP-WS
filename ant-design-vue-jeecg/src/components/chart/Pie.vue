@@ -8,6 +8,8 @@
       <v-pie position="percent" color="item" :v-style="pieStyle" :label="labelConfig"/>
       <v-coord type="theta"/>
     </v-chart>
+    <!--上右下左-->
+    <div :style="{ marginBottom: '20px',padding: '0 20px 0 12px'}">{{DataSetResultAll}}</div>
   </div>
 </template>
 
@@ -26,6 +28,10 @@
       height: {
         type: Number,
         default: 254
+      },
+      DataSetResultAll:{
+        type: String,
+        default: ''
       },
       dataSource: {
         type: Array,

@@ -9,7 +9,7 @@
               <a-radio-button value="WordSegmentation_N">名词统计</a-radio-button>
             </a-radio-group>
           </a-col>
-          <bar class="statistic" :title="ShowReloadModel" :dataSource="countSource" :height="400"/>
+          <bar class="statistic" :title="ShowReloadModel" :dataSource="countSource" :DataSetResultAll="DataSetResultAll" :height="400"/>
         </a-row>
       </a-tab-pane>
 
@@ -21,7 +21,7 @@
               <a-radio-button value="WordSegmentation_N">名词统计</a-radio-button>
             </a-radio-group>
           </a-col>
-          <pie class="statistic" :title="ShowReloadModel" :dataSource="countSource" :height="450"/>
+          <pie class="statistic" :title="ShowReloadModel" :dataSource="countSource" :DataSetResultAll="DataSetResultAll" :height="450"/>
         </a-row>
       </a-tab-pane>
     </a-tabs>
@@ -69,6 +69,7 @@
         tabStatus:"bar",
         ShowReloadModel: '',
         ShowModelUpdate: false,
+        DataSetResultAll:"",
         url: {
           getYearCountInfo: "/mock/api/report/getYearCountInfo",
           getMonthCountInfo:"/mock/api/report/getMonthCountInfo",
@@ -121,10 +122,11 @@
           message.warning("分词结果中不含指定词性！",2)
         }else{
           let wordOrNature = "";
-          let DataSetResultAll = "";
+          //let DataSetResultAll = "";
+          this.DataSetResultAll = "";
           for (let i = 0; i < data.length; i++) {
             wordOrNature = this.checked === true ? data[i].word + "/" + data[i].nature : data[i].word;
-            DataSetResultAll += " [ " + wordOrNature + " ] ";
+            this.DataSetResultAll += " [ " + wordOrNature + " ] ";
             if(this.tabStatus === "bar"){
               this.countSource.push({
                 x: wordOrNature,
@@ -138,7 +140,7 @@
             }
           }
           //DataSetResult是在父组件引用改组件时定义的v-on（或@）监听方法，第二个参数DataSetResultAll是需要传的值
-          this.$emit('DataSetResult', DataSetResultAll);
+          this.$emit('DataSetResult', this.DataSetResultAll);
         }
       },
       // 选择统计图类别
