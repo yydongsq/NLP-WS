@@ -27,7 +27,7 @@
                 placeholder="请选择模型名称"
                 :value="ModelName"
                 @change='handleModelChange'>
-                <a-select-option v-for="m in models" :key="m.id" :value="m.modelName">{{m.modelName}}</a-select-option>
+                <a-select-option v-for="m in models" :key="m.id" :value="m.id">{{m.modelName}}</a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
@@ -41,14 +41,14 @@
               <a-button type="primary" @click="searchDataSet" icon="file-text">查看数据集</a-button>
               <a-button type="primary" @click="searchQuery" icon="search" style="margin-left: 8px">进行分词</a-button>
               <a-button type="primary" @click="searchPSResult" icon="file-search" style="margin-left: 8px">查看分词结果</a-button>
-                            <a-button type="primary" @click="searchPartOfSpeech" icon="question-circle" style="margin-left: 8px">词性说明</a-button>
+              <a-button type="primary" @click="searchPartOfSpeech" icon="question-circle" style="margin-left: 8px">词性说明</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
             </span>
           </a-col>
         </a-row>
       </a-form>
       <a-modal v-model:visible="visible" :title="modalTitle" @ok="handleOk">
-        <PartOfSpeech v-show="PSVisible"></PartOfSpeech>
+        <PartOfSpeech :ModelPosId = "ModelPosId" v-show = "PSVisible"></PartOfSpeech>
         <div v-show="DataSetVisible">{{dataSetContent}}</div>
         <div v-show="DataSetResultVisible">{{dataSetResultContent}}</div>
       </a-modal>
@@ -100,6 +100,8 @@
           PSVisible:false,  //分词标注集展示关闭
           DataSetVisible:false, //数据集展示关闭
           DataSetResultVisible:false, //分词结果展示关闭
+          ModelPosId:"",  //模型对应的词性标注集ID
+          ModelPosName:"",  //模型对应的词性标注集名称
           url: {
             getModelData:"/jeecg-demo/mynlp/tbNlpModel/list", //请求后台模型数据API接口
             getDataSetData:"/jeecg-demo/mynlp/tbNlpDataset/list", //请求后台数据集数据API接口
@@ -158,13 +160,20 @@
         onChange(checked) {
           this.checked = checked;
         },
-        //是否弹出词性说明对话框
+        //查看词性说明
         searchPartOfSpeech(){
-          this.modalTitle = "863词性标注集";
-          this.visible = true;
-          this.DataSetVisible = false;
-          this.DataSetResultVisible = false;
-          this.PSVisible = true;
+          //通过validateFields的方法，能够校验必填项是否有值，若无，则页面会给出警告！(对指定字段进行校验，第一个参数是一个数组，数组里是指定字段的名称)
+          this.form.validateFields(['ModelName'],(err) => {
+            console.log("err = " + err);
+            //判断必填项校验是否通过
+            if (!err) {
+              this.modalTitle = this.ModelPosName;
+              this.visible = true;
+              this.DataSetVisible = false;
+              this.DataSetResultVisible = false;
+              this.PSVisible = true;
+            }
+          })
         },
         //关闭词性说明对话框窗口
         handleOk(){
@@ -195,14 +204,23 @@
               }
             }else{
               message.warning('请求超时，请重试！',2)
-              //var that = this;
-              //that.$message.warning(res.message);
             }
           })
         },
         //绑定选中的模型名称
         handleModelChange(value){
-          this.ModelName = value;
+          let obj = {};
+          //从当前models数组中寻找
+          obj = this.models.find(function (item) {
+            //判断id相等
+            return item.id === value;
+          });
+          //obj就是被选中的那个对象
+          console.info("obj.modelPosName = " + obj.modelPosName);
+          console.info("obj.modelPosId = " + obj.modelPosId);
+          this.ModelName = obj.modelName;
+          this.ModelPosName = obj.modelPosName; //模型对应的词性标注集名称
+          this.ModelPosId = obj.modelPosId; //模型对应的词性标注集ID
         },
         //绑定选中的数据集名称(传进来的value是select组件选中的value值)
         handleDataSetChange(value){

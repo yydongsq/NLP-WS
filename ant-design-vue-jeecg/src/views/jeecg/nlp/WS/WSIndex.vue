@@ -243,7 +243,7 @@
       //this.loadDate(url,'participle',{type:"get_all"});
     },
     watch:{
-      //将ShowModel作为监事属性
+      //将ShowModel作为监视属性
       ShowModel:{
         //immediate:true, //初始化时让handler调用一下
         deep:true,//深度监视
@@ -252,7 +252,7 @@
           this.getUrl("WordSegmentation",{});
         }
       },
-      //将DataSet作为监事属性
+      //将DataSet作为监视属性
       DataSet:{
         //immediate:true, //初始化时让handler调用一下
         deep:true,//深度监视
