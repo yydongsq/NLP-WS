@@ -202,7 +202,7 @@
         let url = "";
         let dtText = {};  //初始化用户自定义输入的文本内容对象
          // 判断如果不是调用数据集时对文本内容对象进行属性赋值
-        if(dataSetId === ""){
+        if(dataSetId === undefined){
           dtText = {
             "dtText":this.DataSet
           };
