@@ -1,12 +1,12 @@
 <template>
   <div :style="{ padding: '0 0 32px 32px' }">
-    <h4 :style="{ marginBottom: '20px' }">{{ title }}</h4>
+    <h3>{{ title }}</h3>
     <v-chart :forceFit="true" :height="height" :data="dataSource" :scale="scale" :padding="padding">
       <v-tooltip/>
       <v-axis/>
       <v-bar position="x*y"/>
     </v-chart>
-    <div>{{DataSetResultAll}}</div>
+    <div :style="{ marginBottom: '20px',padding: '0 20px 0 12px'}">{{DataSetResult}}</div>
   </div>
 </template>
 
@@ -16,7 +16,7 @@
   export default {
     name: 'Bar',
     props: {
-      DataSetResultAll:{
+      DataSetResult:{
         type: String,
         default: ''
       },

@@ -22,19 +22,18 @@ public class LtpWSController {
 
     /**
      * 对数据集进行分词
-     * @param type
      * @param dataSetId
      * @param tbNlpDataset
      * @return
      */
     @PutMapping(value = "/ltpWS")
-    public Result<String> ltpWS(@RequestParam("type") String type,@RequestParam(value = "dataSetId",required = false) String dataSetId,@RequestBody TbNlpDataset tbNlpDataset) {
+    public Result<String> ltpWS(@RequestParam(value = "dataSetId",required = false) String dataSetId,@RequestBody TbNlpDataset tbNlpDataset) {
         LtpWSCommon ws = new LtpWSCommon();
         String dataSetText = WsUtils.getRequestDataSet(dataSetId, tbNlpDataset);
         if(dataSetText == ""){
             return Result.error("未找到对应数据",null);
         }
-        String ltpWs = ws.getLtpWS(dataSetText,type);
+        String ltpWs = ws.getLtpWS(dataSetText);
         log.info("Ltp调用成功");
         Result<String> result = new Result<String>();
         result.setResult(ltpWs);

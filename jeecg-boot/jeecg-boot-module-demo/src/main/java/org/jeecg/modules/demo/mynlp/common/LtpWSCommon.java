@@ -23,10 +23,9 @@ public class LtpWSCommon {
     /**
      * 调用API接口进行分词
      * @param text
-     * @param type
      * @return
      */
-    public String getLtpWS(String text,String type){
+    public String getLtpWS(String text){
         //封装Ltp模型的Flask RestFull API接口地址
         String url="http://127.0.0.1:5000/ltp/sentence";
         Map<String,Object> params=new HashMap<String,Object>();

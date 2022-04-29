@@ -39,7 +39,7 @@
           <a-col :xl="6" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchDataSet" icon="file-text">查看数据集</a-button>
-              <a-button type="primary" @click="searchQuery" icon="search" style="margin-left: 8px">进行分词</a-button>
+              <a-button type="primary" @click="searchQuery" icon="bar-chart" style="margin-left: 8px">进行分词</a-button>
               <a-button type="primary" @click="searchPSResult" icon="file-search" style="margin-left: 8px">查看分词结果</a-button>
               <a-button type="primary" @click="searchPartOfSpeech" icon="question-circle" style="margin-left: 8px">词性说明</a-button>
               <a-button type="primary" @click="searchReset" icon="reload" style="margin-left: 8px">重置</a-button>
@@ -65,6 +65,7 @@
                :DataSet = "DataSet"
                :dataSetId = "dataSetId"
                :checked = "checked"
+               :ModelPosId = "ModelPosId"
                ref="child"
                v-on:DataSetResult="DataSetResult">
       </WSIndex>
@@ -131,7 +132,7 @@
               //判断在上一次调用模型失败之后再次进行分词有没有更改数据集和模型，以防止引起监视属性改变而重复调用模型
               if(this.DataSet === this.dataSetContent && this.ShowModel === this.ModelName){
                 //在调用超时再次点击进行分词调用子组件的方法尝试重新进行分词
-                this.$refs.child.getUrl("WordSegmentation",{});
+                this.$refs.child.getUrl({});
               }else{
                 //通过双向绑定改变监视属性调用模型
                 this.DataSet = this.dataSetContent;

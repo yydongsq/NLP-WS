@@ -22,10 +22,9 @@ public class JiebaWSCommon {
     /**
      * 调用API接口进行分词
      * @param text
-     * @param type
      * @return
      */
-    public String getJiebaWS(String text,String type){
+    public String getJiebaWS(String text){
         //封装Thulac模型的Flask RestFull API接口地址
         String url="http://127.0.0.1:5000/jieba/sentence";
         Map<String,Object> params=new HashMap<String,Object>();

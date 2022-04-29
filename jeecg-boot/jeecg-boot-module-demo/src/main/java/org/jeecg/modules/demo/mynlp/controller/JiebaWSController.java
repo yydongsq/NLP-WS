@@ -22,19 +22,18 @@ public class JiebaWSController {
 
     /**
      * 对数据集进行分词
-     * @param type
      * @param dataSetId
      * @param tbNlpDataset
      * @return
      */
     @PutMapping(value = "/jiebaWS")
-    public Result<String> jiebaWS(@RequestParam("type") String type,@RequestParam(value = "dataSetId",required = false) String dataSetId,@RequestBody TbNlpDataset tbNlpDataset) {
+    public Result<String> jiebaWS(@RequestParam(value = "dataSetId",required = false) String dataSetId,@RequestBody TbNlpDataset tbNlpDataset) {
         JiebaWSCommon ws = new JiebaWSCommon();
         String dataSetText = WsUtils.getRequestDataSet(dataSetId, tbNlpDataset);
         if(dataSetText == ""){
             return Result.error("未找到对应数据",null);
         }
-        String jiebaWs = ws.getJiebaWS(dataSetText,type);
+        String jiebaWs = ws.getJiebaWS(dataSetText);
         log.info("Jieba调用成功");
         Result<String> result = new Result<String>();
         result.setResult(jiebaWs);

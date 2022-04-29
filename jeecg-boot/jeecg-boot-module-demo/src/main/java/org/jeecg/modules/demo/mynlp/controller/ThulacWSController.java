@@ -22,19 +22,18 @@ public class ThulacWSController {
 
     /**
      * 对数据集进行分词
-     * @param type
      * @param dataSetId
      * @param tbNlpDataset
      * @return
      */
     @PutMapping(value = "/thulacWS")
-    public Result<String> thulacWS(@RequestParam("type") String type,@RequestParam(value = "dataSetId",required = false) String dataSetId,@RequestBody TbNlpDataset tbNlpDataset) {
+    public Result<String> thulacWS(@RequestParam(value = "dataSetId",required = false) String dataSetId,@RequestBody TbNlpDataset tbNlpDataset) {
         ThulacWSCommon ws = new ThulacWSCommon();
         String dataSetText = WsUtils.getRequestDataSet(dataSetId, tbNlpDataset);
         if(dataSetText == ""){
             return Result.error("未找到对应数据",null);
         }
-        String thulacWs = ws.getThulacWS(dataSetText,type);
+        String thulacWs = ws.getThulacWS(dataSetText);
         log.info("Thulac调用成功");
         Result<String> result = new Result<String>();
         result.setResult(thulacWs);

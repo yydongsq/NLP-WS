@@ -1,6 +1,6 @@
 <template>
   <div :style="{ padding: '0 0 32px 32px' }">
-    <h4 :style="{ marginBottom: '20px',padding: '0 0 0 12px'}">{{ title }}</h4>
+    <h3 :style="{ margin: '0 0 20px 800px'}">{{ title }}</h3>
     <v-chart :forceFit="true" :height="height" :data="data" :scale="scale" :padding="padding" :onClick="handleClick">
       <v-tooltip :showTitle="false" dataKey="item*percent"/>
       <v-axis/>
@@ -9,7 +9,7 @@
       <v-coord type="theta"/>
     </v-chart>
     <!--上右下左-->
-    <div :style="{ marginBottom: '20px',padding: '0 20px 0 12px'}">{{DataSetResultAll}}</div>
+    <div :style="{ marginBottom: '20px',padding: '0 20px 0 20px'}">{{DataSetResult}}</div>
   </div>
 </template>
 
@@ -29,7 +29,7 @@
         type: Number,
         default: 254
       },
-      DataSetResultAll:{
+      DataSetResult:{
         type: String,
         default: ''
       },
