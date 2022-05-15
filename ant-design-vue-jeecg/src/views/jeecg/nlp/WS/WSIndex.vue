@@ -14,7 +14,8 @@
                   placeholder="请选择词性名称"
                   :value="posTagsAndMeaning"
                   @change='handlePosChange'>
-                  <a-select-option v-for="p in poses" :key="p.id" :value="p.id">{{p.posTags}}/{{p.posMeaning}}</a-select-option>
+                  <a-select-option v-for="p in poses" :key="p.id" :value="p.id">{{p.posTags}}/{{p.posMeaning}}
+                  </a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -23,7 +24,15 @@
                 <a-button type="primary" @click="selectPos" icon="search">开始筛选</a-button>
               </span>
             </a-col>
-            <bar class="statistic" :title="ShowReloadModel" :dataSource="countSource" :DataSetResult="DataSetResult" :height="400"/>
+          </a-row>
+          <a-row>
+            <a-button type="" @click="selectPage('first')" icon="">首页</a-button>
+            <a-button style="margin-left: 5px" type="" @click="selectPage('up')" icon="left">上一页</a-button>
+            <a-button style="margin-left: 5px" type="" @click="selectPage('down')" icon="right">下一页</a-button>
+            <a-button style="margin-left: 5px" type="" @click="selectPage('last')" icon="">最后一页</a-button>
+            <span style="margin-left: 5px">共{{totalPage}}页 当前在{{currentPage}}/{{totalPage}}</span>
+            <bar class="statistic" :title="ShowReloadModel" :dataSource="countSource" :DataSetResult="DataSetResult"
+                 :height="400"/>
           </a-row>
         </a-form>
       </a-tab-pane>
@@ -40,7 +49,8 @@
                   placeholder="请选择词性名称"
                   :value="posTagsAndMeaning"
                   @change='handlePosChange'>
-                  <a-select-option v-for="p in poses" :key="p.id" :value="p.id">{{p.posTags}}/{{p.posMeaning}}</a-select-option>
+                  <a-select-option v-for="p in poses" :key="p.id" :value="p.id">{{p.posTags}}/{{p.posMeaning}}
+                  </a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -49,7 +59,10 @@
                   <a-button type="primary" @click="selectPos" icon="search">开始筛选</a-button>
                 </span>
             </a-col>
-            <pie class="statistic" :title="ShowReloadModel" :dataSource="countSource" :DataSetResult="DataSetResult" :height="450"/>
+          </a-row>
+          <a-row>
+            <pie class="statistic" :title="ShowReloadModel" :dataSource="countSource" :DataSetResult="DataSetResult"
+                 :height="400"/>
           </a-row>
         </a-form>
       </a-tab-pane>
@@ -61,8 +74,8 @@
   import Bar from '@/components/chart/Bar'
   import Pie from '@/components/chart/Pie'
   import ACol from 'ant-design-vue/es/grid/Col'
-  import { putNlpAction,getAction } from '@/api/manage'
-  import { message, Button } from 'ant-design-vue';
+  import {putNlpAction, getAction} from '@/api/manage'
+  import {message, Button} from 'ant-design-vue';
 
   export default {
     name: 'WSIndex',
@@ -84,83 +97,103 @@
       return {
         queryParam: {}, // 查询条件
         countSource: [],  //图表数据源数组
-        tabStatus:"bar",  //统计图类型，默认进行分词时展示柱状图
+        tabStatus: "bar",  //统计图类型，默认进行分词时展示柱状图
         ShowReloadModel: '',  //加载成功的模型名称
         ShowModelUpdate: false, //判断模型是否改变
-        DataSetResult:"", //当前组件与柱状图和饼状图子组件进行传值，并且传递给父组件的分词结果展示
-        posTag:"", //词性标签
-        posTagsAndMeaning:undefined, //词性标签和含义，定义为undefined为了让placeholder显示
-        poses:[], //词性明细数组
-        json_DataSet:[],  //调用接口得到的原始分词结果
-        json_SelectDataSet:[],  //筛选后的分词结果
+        DataSetResult: "", //当前组件与柱状图和饼状图子组件进行传值，并且传递给父组件的分词结果展示
+        DataSetResultAll: "", //查看分词结果的数据
+        posTag: "", //词性标签
+        posTagsAndMeaning: undefined, //词性标签和含义，定义为undefined为了让placeholder显示
+        poses: [], //词性明细数组
+        json_DataSet: [],  //调用接口得到的原始分词结果
+        json_SelectDataSet: [],  //筛选后的分词结果
+        totalPage: 1, //总页数
+        currentPage: 1, //当前页数
         url: {
-          getHanLPWS:"/jeecg-demo/mynlp/hanlp/hanLPWS",
-          getJiebaWS:"/jeecg-demo/mynlp/jieba/jiebaWS",
-          getLtpWS:"/jeecg-demo/mynlp/ltp/ltpWS",
-          getThulacWS:"/jeecg-demo/mynlp/thulac/thulacWS",
-          queryTbNlpPosDetailListByMainId:"/jeecg-demo/mynlp/tbNlpPos/queryTbNlpPosDetailByMainId", //通过自然语言词性标注集明细主表ID查询
+          getHanLPWS: "/jeecg-demo/mynlp/hanlp/hanLPWS",
+          getJiebaWS: "/jeecg-demo/mynlp/jieba/jiebaWS",
+          getLtpWS: "/jeecg-demo/mynlp/ltp/ltpWS",
+          getThulacWS: "/jeecg-demo/mynlp/thulac/thulacWS",
+          queryTbNlpPosDetailListByMainId: "/jeecg-demo/mynlp/tbNlpPos/queryTbNlpPosDetailByMainId", //通过自然语言词性标注集明细主表ID查询
         },
         form: this.$form.createForm(this), // 只有这样注册后，才能通过表单拉取数据
       }
     },
     methods: {
-      loadData(url,param,dtTextJsonString) {
-        const loding = message.loading('模型加载中，请稍后...',0); //第二个参数设置为0一直显示加载中
-        putNlpAction(url,param,dtTextJsonString).then((res) => {
+      loadData(url, param, dtTextJsonString) {
+        const loding = message.loading('模型加载中，请稍后...', 0); //第二个参数设置为0一直显示加载中
+        putNlpAction(url, param, dtTextJsonString).then((res) => {
           loding(); //关闭正在加载弹窗
           if (res.success) {
-            message.success('模型加载成功！',2);
+            message.success('模型加载成功！', 2);
             this.json_DataSet = []; //在每次重新分词前刷新分词结果数组（置空）
             this.searchReset(); //重新进行全分词后将词性下拉列表置空
             this.getPosDetail();  //模型加载成功后为词性下拉列表赋值
             let json_Data = JSON.parse(res.result);
             this.json_DataSet = json_Data.data;
             this.ShowReloadModel = this.ShowModel + "分词结果"; //分词后图表左上方展示的模型名称
-            this.getWSData(this.json_DataSet);
-          }else{
-            message.warning('请求超时，请重试！',2)
+            let json_DataSet = this.json_DataSet;
+            this.getDataSetResultAll(json_DataSet); //为查看分词结果内容赋值，这里是全部分词的结果
+            this.getWSData(json_DataSet);
+          } else {
+            message.warning('请求超时，请重试！', 2)
             //DataSetResult是在父组件on监听的方法，第二个参数DataSetResult是需要传的值
-            this.$emit('DataSetResult', false);
+            this.$emit('DataSetResultAll', false);
           }
         })
       },
-      getWSData(data){
+      // 为查看分词结果页面赋值，此处是全部分词结果
+      getDataSetResultAll(data){
+        alert(3);
+        let wordOrNature = "";
+        this.DataSetResultAll = ""; //在每次重新分词前刷新分词结果数据数据（防止内容叠加显示）
+        for (let i = 0; i < data.length; i++) {
+          wordOrNature = this.checked === true ? data[i].word + "/" + data[i].nature : data[i].word;
+          this.DataSetResultAll += " [ " + wordOrNature + " ] ";
+        }
+        //DataSetResult是在父组件引用改组件时定义的v-on（或@）监听方法，第二个参数DataSetResult是需要传的值
+        this.$emit('DataSetResultAll', this.DataSetResultAll);
+      },
+      // 为柱状图和饼状图填充数据
+      getWSData(data) {
         console.info("checked = " + this.checked);
-        if(data.length ===  0){
-          message.warning("分词结果中不含指定词性！",2)
-        }else{
+        if (data.length === 0) {
+          message.warning("分词结果中不含指定词性！", 2)
+        } else {
+          //进行数组的切分
+          let arrList = this.dataSetGroup(data, 20);
+          this.totalPage = arrList.length;
+          data = arrList[0];
           let wordOrNature = "";
           this.DataSetResult = ""; //在每次重新分词前刷新分词结果数据数据（防止内容叠加显示）
           this.countSource = [];  //在每次重新分词前刷新图表数据源数组（置空）
           for (let i = 0; i < data.length; i++) {
             wordOrNature = this.checked === true ? data[i].word + "/" + data[i].nature : data[i].word;
             this.DataSetResult += " [ " + wordOrNature + " ] ";
-            if(this.tabStatus === "bar"){
+            if (this.tabStatus === "bar") {
               this.countSource.push({
                 x: wordOrNature,
                 y: 650
               })
-            }else{
+            } else {
               this.countSource.push({
                 item: wordOrNature,
-                count:2
+                count: 2
               })
             }
           }
-          //DataSetResult是在父组件引用改组件时定义的v-on（或@）监听方法，第二个参数DataSetResult是需要传的值
-          this.$emit('DataSetResult', this.DataSetResult);
         }
       },
       // 选择统计图类别
       callback(key) {
         this.searchReset(); //重新选择统计图类别后将词性下拉列表置空
-        if(this.ShowModel === ""){
-          message.warning("请先进行分词！",2);
-        }else{
-          if(key === "1"){
+        if (this.ShowModel === "") {
+          message.warning("请先进行分词！", 2);
+        } else {
+          if (key === "1") {
             this.tabStatus = "bar";
             this.getWSData(this.json_DataSet);  //将分词数据重置为全分词模式
-          }else{
+          } else {
             this.tabStatus = "pie";
             this.getWSData(this.json_DataSet);  //将分词数据重置为全分词模式
           }
@@ -169,11 +202,11 @@
       // 进行词性筛选
       selectPos() {
         //如果没有选中模型并进行分词操作进行分词提示，否则进行必填项校验提示，基本逻辑为只有进行分词之后并进行了词性筛选选择才会触发分词筛选结果展示
-        if(this.ShowModel === ""){
-          message.warning("请先进行分词！",2);
-        }else{
+        if (this.ShowModel === "") {
+          message.warning("请先进行分词！", 2);
+        } else {
           //通过validateFields的方法，能够校验必填项是否有值，若无，则页面会给出警告！(对指定字段进行校验，第一个参数是一个数组，数组里是指定字段的名称)
-          this.form.validateFields(['posTagsAndMeaning'],(err) => {
+          this.form.validateFields(['posTagsAndMeaning'], (err) => {
             console.log("err = " + err);
             //判断必填项校验是否通过
             if (!err) {
@@ -181,13 +214,14 @@
               //如果这样直接赋值改变赋值后的数组会造成原数组的数据也改变，因为JavaScript存储对象时存储的是地址，浅拷贝导致两个数组指向同一块内存地址。
               //this.json_SelectDataSet = this.json_DataSet;
               //深拷贝（slice、concat）
-              let Dataset = [].concat(this.json_DataSet);//或者Dataset = this.json_DataSet.slice(0)效果相同
-              this.json_SelectDataSet = Dataset;
+              this.json_SelectDataSet = [].concat(this.json_DataSet);//或者Dataset = this.json_DataSet.slice(0)效果相同
               let SelectDataSet = this.json_SelectDataSet;
-              for (let i = 0; i < SelectDataSet.length; i++) {
-                if(SelectDataSet[i].nature !== this.posTag){
-                  SelectDataSet.splice(i, 1);//从i开始（包括i，i从0开始）删除一个元素
-                  i--; //删除数组指定元素之后，将i重新定位在删除的位置跟此时位置上的新元素重新比较
+              if (this.posTag !== "全部") {
+                for (let i = 0; i < SelectDataSet.length; i++) {
+                  if (SelectDataSet[i].nature !== this.posTag) {
+                    SelectDataSet.splice(i, 1);//从i开始（包括i，i从0开始）删除一个元素
+                    i--; //删除数组指定元素之后，将i重新定位在删除的位置跟此时位置上的新元素重新比较
+                  }
                 }
               }
               this.getWSData(SelectDataSet);
@@ -196,65 +230,70 @@
         }
       },
       // 选择请求url
-       getUrl(param){
+      getUrl(param) {
         let showModel = this.ShowModel;
         let dataSetId = this.dataSetId;
         let url = "";
         let dtText = {};  //初始化用户自定义输入的文本内容对象
-         // 判断如果不是调用数据集时对文本内容对象进行属性赋值
-        if(dataSetId === undefined){
+        // 判断如果不是调用数据集时对文本内容对象进行属性赋值
+        if (dataSetId === undefined) {
           dtText = {
-            "dtText":this.DataSet
+            "dtText": this.DataSet
           };
         }
         let dtTextJsonString = JSON.stringify(dtText);
-        if(showModel === "HanLP"){
+        if (showModel === "HanLP") {
           param = {
-            dataSetId:dataSetId
+            dataSetId: dataSetId
           };
           url = this.url.getHanLPWS;
         }
-        if(showModel === "Thulac"){
+        if (showModel === "Thulac") {
           param = {
-            dataSetId:dataSetId
+            dataSetId: dataSetId
           };
           url = this.url.getThulacWS;
         }
-        if(showModel === "Jieba"){
+        if (showModel === "Jieba") {
           param = {
-            dataSetId:dataSetId
+            dataSetId: dataSetId
           };
           url = this.url.getJiebaWS;
         }
-        if(showModel === "Ltp"){
+        if (showModel === "Ltp") {
           param = {
-            dataSetId:dataSetId
+            dataSetId: dataSetId
           };
           url = this.url.getLtpWS;
         }
-        if(url !== ""){
-          this.loadData(url,param,dtTextJsonString);
-        }else{
-          if(showModel === ""){
-            message.warning("请先进行分词！",2);
-          }else{
-            message.warning("该模型未封装！",2);
+        if (url !== "") {
+          this.loadData(url, param, dtTextJsonString);
+        } else {
+          if (showModel === "") {
+            message.warning("请先进行分词！", 2);
+          } else {
+            message.warning("该模型未封装！", 2);
           }
         }
       },
-      handlePosChange(value){
-        let obj = {};
-        //从当前models数组中寻找
-        obj = this.poses.find(function (item) {
-          //判断id相等
-          return item.id === value;
-        });
-        //obj就是被选中的那个对象
-        this.posTag = obj.posTags; //词性的标签
-        this.posTagsAndMeaning = obj.posTags + "/" + obj.posMeaning; //将词性标签和含义进行组合显示在下拉列表
+      handlePosChange(value) {
+        if (value === "0") {
+          this.posTag = "全部"; //词性的标签
+          //this.posTagsAndMeaning = "全部/全部"; //将词性标签和含义进行组合显示在下拉列表
+        } else {
+          let obj = {};
+          //从当前models数组中寻找
+          obj = this.poses.find(function (item) {
+            //判断id相等
+            return item.id === value;
+          });
+          //obj就是被选中的那个对象
+          this.posTag = obj.posTags; //词性的标签
+          //this.posTagsAndMeaning = obj.posTags + "/" + obj.posMeaning; //将词性标签和含义进行组合显示在下拉列表
+        }
       },
       //将将词性下拉列表置为空
-      searchReset(){
+      searchReset() {
         this.posTagsAndMeaning = undefined;
         //加入v-decorator后无法使用v-model进行双向数据绑定，通过 setFieldsValue() 方法进行数据改变
         this.form.setFieldsValue({
@@ -262,42 +301,56 @@
         })
       },
       //获取词性标注集明细
-      getPosDetail(){
+      getPosDetail() {
         let requestUrl = this.url.queryTbNlpPosDetailListByMainId;
         let param = {
-          "id" : this.ModelPosId
+          "id": this.ModelPosId
         }
-        getAction(requestUrl,param).then((res) => {
+        getAction(requestUrl, param).then((res) => {
           console.info("res.success = " + res.success);
           if (res.success) {
-            this.poses = res.result;
-          }else{
-            message.warning('请求超时，请重试！',2)
+            this.poses = [{
+              "id": "0",
+              "posTags": "全部",
+              "posMeaning": "全部"
+            }]
+            this.poses = this.poses.concat(res.result);
+          } else {
+            message.warning('请求超时，请重试！', 2)
           }
         })
       },
+      // 将dataSetArr数组按照subGroupLength个一份分成若干数组
+      dataSetGroup(dataSetArr, subGroupLength) {
+        let index = 0;
+        let newArray = [];
+        while (index < dataSetArr.length) {
+          newArray.push(dataSetArr.slice(index, index += subGroupLength));
+        }
+        return newArray;
+      }
     },
     created() {
     },
-    watch:{
+    watch: {
       //将ShowModel作为监视属性
-      ShowModel:{
+      ShowModel: {
         //immediate:true, //初始化时让handler调用一下
-        deep:true,//深度监视
-        handler(newValue,oldValue){
+        deep: true,//深度监视
+        handler(newValue, oldValue) {
           this.showModelUpdate = true;
           this.getUrl({});
         }
       },
       //将DataSet作为监视属性
-      DataSet:{
+      DataSet: {
         //immediate:true, //初始化时让handler调用一下
-        deep:true,//深度监视
-        handler(newValue,oldValue){
+        deep: true,//深度监视
+        handler(newValue, oldValue) {
           //解决数据集和模型同时改变时重复调用gatUrl方法
-          if(this.showModelUpdate === false){
+          if (this.showModelUpdate === false) {
             this.getUrl({});
-          }else{
+          } else {
             //解决数据集改变而模型不改变时不调用gatUrl方法
             this.showModelUpdate = false;
           }

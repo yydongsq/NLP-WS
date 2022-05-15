@@ -1,6 +1,6 @@
 <template>
-  <div :style="{ padding: '0 0 32px 32px' }">
-    <h3 :style="{ margin: '0 0 20px 800px'}">{{ title }}</h3>
+  <div>
+    <h3 style="text-align: center;margin: 0 0 20px 0;">{{ title }}</h3>
     <v-chart :forceFit="true" :height="height" :data="data" :scale="scale" :padding="padding" :onClick="handleClick">
       <v-tooltip :showTitle="false" dataKey="item*percent"/>
       <v-axis/>
@@ -60,7 +60,7 @@
             return item.point.item + ': ' + val
           }
         }],
-        padding: ['auto', 'auto', '40', '50']
+        padding: ['20', '20', '20', '20']
       }
     },
     computed: {

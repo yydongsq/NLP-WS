@@ -1,6 +1,6 @@
 <template>
-  <div :style="{ padding: '0 0 32px 32px' }">
-    <h3>{{ title }}</h3>
+  <div>
+    <h3 style="text-align:center">{{ title }}</h3>
     <v-chart :forceFit="true" :height="height" :data="dataSource" :scale="scale" :padding="padding">
       <v-tooltip/>
       <v-axis/>
@@ -11,12 +11,12 @@
 </template>
 
 <script>
-  import { triggerWindowResizeEvent } from '@/utils/util'
+  import {triggerWindowResizeEvent} from '@/utils/util'
 
   export default {
     name: 'Bar',
     props: {
-      DataSetResult:{
+      DataSetResult: {
         type: String,
         default: ''
       },
@@ -38,7 +38,14 @@
       }
     },
     data() {
-      return { padding: ['auto', 'auto', '40', '50'] }
+      return {
+        padding: ['auto', 'auto', '40', '50'],
+      }
+    },
+    methods: {
+      selectPage(value){
+        alert(value);
+      }
     },
     computed: {
       scale() {

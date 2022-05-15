@@ -67,7 +67,7 @@
                :checked = "checked"
                :ModelPosId = "ModelPosId"
                ref="child"
-               v-on:DataSetResult="DataSetResult">
+               v-on:DataSetResultAll="DataSetResultAll">
       </WSIndex>
     </div>
     <!-- 查询区域-END -->
@@ -251,10 +251,12 @@
           }
         },
         //子组件传值给父组件(dataSetResult就是子组件传过来的值)
-        DataSetResult(dataSetResult){
-          if(dataSetResult !== false){
-            this.dataSetResultContent = dataSetResult;
+        DataSetResultAll(dataSetResultAll){
+          if(dataSetResultAll !== false){
+            alert(1);
+            this.dataSetResultContent = dataSetResultAll;
           }else{
+            alert(2);
             //调用超时
           }
         }
