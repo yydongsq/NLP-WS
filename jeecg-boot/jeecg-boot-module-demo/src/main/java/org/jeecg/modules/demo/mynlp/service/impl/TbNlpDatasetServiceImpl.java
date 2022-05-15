@@ -1,6 +1,7 @@
 package org.jeecg.modules.demo.mynlp.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import net.sf.saxon.expr.instruct.ForEach;
 import org.jeecg.modules.demo.mynlp.entity.TbNlpDataset;
 import org.jeecg.modules.demo.mynlp.mapper.TbNlpDatasetMapper;
 import org.jeecg.modules.demo.mynlp.service.ITbNlpDatasetService;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Description: 自然语言分词数据集
@@ -24,15 +26,27 @@ public class TbNlpDatasetServiceImpl extends ServiceImpl<TbNlpDatasetMapper, TbN
     public boolean save(TbNlpDataset entity) {
         entity.setDtUpdateBy(entity.getDtCreateBy());
         entity.setDtUpdateTime(new Date());
+        List<TbNlpDataset> tbNlpDatasets = tbNlpDatasetMapper.selectList(null);
+        for (TbNlpDataset tbNlpDataset : tbNlpDatasets) {
+            if(tbNlpDataset.getDtText().equals(entity.getDtText())){
+                return false;
+            }
+        }
         tbNlpDatasetMapper.insert(entity);
-        return false;
+        return true;
     }
 
     @Override
     public boolean updateById(TbNlpDataset entity) {
         entity.setDtUpdateBy(entity.getDtCreateBy());
         entity.setDtUpdateTime(new Date());
+        List<TbNlpDataset> tbNlpDatasets = tbNlpDatasetMapper.selectList(null);
+        for (TbNlpDataset tbNlpDataset : tbNlpDatasets) {
+            if(!tbNlpDataset.getId().equals(entity.getId()) && tbNlpDataset.getDtText().equals(entity.getDtText())){
+                return false;
+            }
+        }
         tbNlpDatasetMapper.updateById(entity);
-        return false;
+        return true;
     }
 }

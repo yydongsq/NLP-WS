@@ -66,8 +66,12 @@ public class TbNlpDatasetController extends JeecgController<TbNlpDataset, ITbNlp
    @ApiOperation(value="自然语言分词数据集-添加", notes="自然语言分词数据集-添加")
    @PostMapping(value = "/add")
    public Result<String> add(@RequestBody TbNlpDataset tbNlpDataset) {
-       tbNlpDatasetService.save(tbNlpDataset);
-       return Result.OK("添加成功！");
+       boolean res = tbNlpDatasetService.save(tbNlpDataset);
+       if(res){
+           return Result.OK("添加成功！");
+       }else{
+           return Result.error("数据集内容已存在！");
+       }
    }
 
    /**
@@ -80,8 +84,12 @@ public class TbNlpDatasetController extends JeecgController<TbNlpDataset, ITbNlp
    @ApiOperation(value="自然语言分词数据集-编辑", notes="自然语言分词数据集-编辑")
    @RequestMapping(value = "/edit", method = {RequestMethod.PUT,RequestMethod.POST})
    public Result<String> edit(@RequestBody TbNlpDataset tbNlpDataset) {
-       tbNlpDatasetService.updateById(tbNlpDataset);
-       return Result.OK("编辑成功!");
+       boolean res = tbNlpDatasetService.updateById(tbNlpDataset);
+       if(res){
+           return Result.OK("编辑成功！");
+       }else{
+           return Result.error("数据集内容已存在！");
+       }
    }
 
    /**
