@@ -26,11 +26,20 @@
             </a-col>
           </a-row>
           <a-row>
+            <span v-show="pageVisiable">
             <a-button type="" @click="selectPage('first')" icon="">首页</a-button>
-            <a-button style="margin-left: 5px" type="" @click="selectPage('up')" icon="left">上一页</a-button>
-            <a-button style="margin-left: 5px" type="" @click="selectPage('down')" icon="right">下一页</a-button>
+            <a-button :disabled="disabledBefore" style="margin-left: 5px" type="" @click="selectPage('before')"
+                      icon="left">上一页
+            </a-button>
+            <a-button :disabled="disabledAfter" style="margin-left: 5px" type="" @click="selectPage('after')"
+                      icon="right">下一页
+            </a-button>
             <a-button style="margin-left: 5px" type="" @click="selectPage('last')" icon="">最后一页</a-button>
-            <span style="margin-left: 5px">共{{totalPage}}页 当前在{{currentPage}}/{{totalPage}}</span>
+            <span style="margin-left: 5px">共{{totalPageNums}}页 当前在{{currentPage}}/{{totalPageNums}} 跳转到<a-input
+              style="width: 50px" type="text" v-model="jumpPage"/>页
+            <a-button style="margin-left: 5px" type="" @click="selectPage('jump')" icon="">确定</a-button>
+            </span>
+            </span>
             <bar class="statistic" :title="ShowReloadModel" :dataSource="countSource" :DataSetResult="DataSetResult"
                  :height="400"/>
           </a-row>
@@ -61,6 +70,20 @@
             </a-col>
           </a-row>
           <a-row>
+            <span v-show="pageVisiable">
+            <a-button type="" @click="selectPage('first')" icon="">首页</a-button>
+            <a-button :disabled="disabledBefore" style="margin-left: 5px" type="" @click="selectPage('before')"
+                      icon="left">上一页
+            </a-button>
+            <a-button :disabled="disabledAfter" style="margin-left: 5px" type="" @click="selectPage('after')"
+                      icon="right">下一页
+            </a-button>
+            <a-button style="margin-left: 5px" type="" @click="selectPage('last')" icon="">最后一页</a-button>
+            <span style="margin-left: 5px">共{{totalPageNums}}页 当前在{{currentPage}}/{{totalPageNums}} 跳转到<a-input
+              style="width: 50px" type="text" v-model="jumpPage"/>页
+            <a-button style="margin-left: 5px" type="" @click="selectPage('jump')" icon="">确定</a-button>
+            </span>
+            </span>
             <pie class="statistic" :title="ShowReloadModel" :dataSource="countSource" :DataSetResult="DataSetResult"
                  :height="400"/>
           </a-row>
@@ -106,9 +129,14 @@
         posTagsAndMeaning: undefined, //词性标签和含义，定义为undefined为了让placeholder显示
         poses: [], //词性明细数组
         json_DataSet: [],  //调用接口得到的原始分词结果
+        arrList: [[]],  //切分后的分词结果
         json_SelectDataSet: [],  //筛选后的分词结果
-        totalPage: 1, //总页数
+        totalPageNums: 1, //总页数
         currentPage: 1, //当前页数
+        jumpPage: 1, //跳转的页数
+        disabledBefore: false, //设置上一页是否可点击
+        disabledAfter: false, //设置下一页是否可点击
+        pageVisiable: false, //翻页条显示与关闭
         url: {
           getHanLPWS: "/jeecg-demo/mynlp/hanlp/hanLPWS",
           getJiebaWS: "/jeecg-demo/mynlp/jieba/jiebaWS",
@@ -134,7 +162,12 @@
             this.ShowReloadModel = this.ShowModel + "分词结果"; //分词后图表左上方展示的模型名称
             let json_DataSet = this.json_DataSet;
             this.getDataSetResultAll(json_DataSet); //为查看分词结果内容赋值，这里是全部分词的结果
-            this.getWSData(json_DataSet);
+            this.arrList = this.dataSetGroup(json_DataSet, 20); //进行数组的切分
+            this.totalPageNums = this.arrList.length; //总页数
+            this.currentPage = 1;
+            this.pageVisiable = true; //显示分页条
+            this.disabledSelectPage(); //初始化第一次显示时上一页和下一页按钮的状态
+            this.getWSData(0); //加载图表数据，默认显示第一页
           } else {
             message.warning('请求超时，请重试！', 2)
             //DataSetResult是在父组件on监听的方法，第二个参数DataSetResult是需要传的值
@@ -143,8 +176,7 @@
         })
       },
       // 为查看分词结果页面赋值，此处是全部分词结果
-      getDataSetResultAll(data){
-        alert(3);
+      getDataSetResultAll(data) {
         let wordOrNature = "";
         this.DataSetResultAll = ""; //在每次重新分词前刷新分词结果数据数据（防止内容叠加显示）
         for (let i = 0; i < data.length; i++) {
@@ -155,47 +187,31 @@
         this.$emit('DataSetResultAll', this.DataSetResultAll);
       },
       // 为柱状图和饼状图填充数据
-      getWSData(data) {
+      getWSData(page) {
         console.info("checked = " + this.checked);
-        if (data.length === 0) {
+        let data = [];
+        if (this.arrList.length === 0) {
           message.warning("分词结果中不含指定词性！", 2)
         } else {
-          //进行数组的切分
-          let arrList = this.dataSetGroup(data, 20);
-          this.totalPage = arrList.length;
-          data = arrList[0];
-          let wordOrNature = "";
-          this.DataSetResult = ""; //在每次重新分词前刷新分词结果数据数据（防止内容叠加显示）
-          this.countSource = [];  //在每次重新分词前刷新图表数据源数组（置空）
-          for (let i = 0; i < data.length; i++) {
-            wordOrNature = this.checked === true ? data[i].word + "/" + data[i].nature : data[i].word;
-            this.DataSetResult += " [ " + wordOrNature + " ] ";
-            if (this.tabStatus === "bar") {
-              this.countSource.push({
-                x: wordOrNature,
-                y: 650
-              })
-            } else {
-              this.countSource.push({
-                item: wordOrNature,
-                count: 2
-              })
-            }
-          }
+          data = this.arrList[page]
         }
-      },
-      // 选择统计图类别
-      callback(key) {
-        this.searchReset(); //重新选择统计图类别后将词性下拉列表置空
-        if (this.ShowModel === "") {
-          message.warning("请先进行分词！", 2);
-        } else {
-          if (key === "1") {
-            this.tabStatus = "bar";
-            this.getWSData(this.json_DataSet);  //将分词数据重置为全分词模式
+        let wordOrNature = "";
+        this.DataSetResult = ""; //在每次重新分词前刷新分词结果数据数据（防止内容叠加显示）
+        this.countSource = [];  //在每次重新分词前刷新图表数据源数组（置空）
+        for (let i = 0; i < data.length; i++) {
+          wordOrNature = this.checked === true ? data[i].word + "/" + data[i].nature : data[i].word;
+          this.DataSetResult += " [ " + wordOrNature + " ] ";
+          let y = Math.floor(Math.random() * 100) + 1; //生成[0,100]随机数
+          if (this.tabStatus === "bar") {
+            this.countSource.push({
+              x: wordOrNature,
+              y: y
+            })
           } else {
-            this.tabStatus = "pie";
-            this.getWSData(this.json_DataSet);  //将分词数据重置为全分词模式
+            this.countSource.push({
+              item: wordOrNature,
+              count: y
+            })
           }
         }
       },
@@ -224,9 +240,132 @@
                   }
                 }
               }
-              this.getWSData(SelectDataSet);
+              this.getDataSetResultAll(SelectDataSet); //为查看分词结果内容赋值，这里是筛选分词的结果（没有切分）
+              this.arrList = [[]]; //在筛选并切分之前，将未筛选时的切分数据清空
+              this.arrList = this.dataSetGroup(SelectDataSet, 20); //进行数组的切分
+              this.totalPageNums = this.arrList.length; //总页数
+              this.currentPage = 1;
+              this.disabledSelectPage(); //初始化第一次显示时上一页和下一页按钮的状态
+              this.getWSData(0);
             }
           })
+        }
+      },
+      // 页面跳转
+      selectPage(value) {
+        switch (value) {
+          case 'first': {
+            this.jumpPage = "";
+            // 当总页数大于1时，点击首页后，禁止点击上一页，可以点击下一页
+            if (this.totalPageNums > 1) {
+              this.disabledAfter = false;
+              this.disabledBefore = true;
+              this.currentPage = 1;
+            }else{
+              this.currentPage = this.totalPageNums === 1 ? 1 : 0; //筛选后如果没有数据，则点击首页显示总页数为0
+            }
+            this.getWSData(0);
+          }
+            break;
+          case 'last': {
+            this.jumpPage = "";
+            // 当总页数大于1时，点击最后一页后，禁止点击下一页，可以点击上一页
+            if (this.totalPageNums > 1) {
+              this.disabledAfter = true;
+              this.disabledBefore = false;
+            }
+            this.currentPage = this.totalPageNums;
+            this.getWSData(this.totalPageNums - 1);
+          }
+            break;
+          case 'before': {
+            this.jumpPage = "";
+            this.currentPage--;
+            this.disabledAfter = false;
+            // 点击上一页后，如果上一页为第一页，则禁止点击上一页
+            if (this.currentPage === 1) {
+              this.disabledBefore = true;
+            }
+            this.getWSData(this.currentPage - 1);
+          }
+            break;
+          case 'after': {
+            this.jumpPage = "";
+            this.currentPage++;
+            this.disabledBefore = false;
+            // 点击下一页后，如果下一页为最后一页，则禁止点击下一页
+            if (this.currentPage === this.totalPageNums) {
+              this.disabledAfter = true;
+            }
+            this.getWSData(this.currentPage - 1);
+          }
+            break;
+          case 'jump': {
+            if (!/^[1-9]([0-9]*)$/.test(this.jumpPage)) {
+              message.warning("请输入合法数字！", 2);
+              break;
+            } else {
+              if (this.jumpPage < 1 || this.jumpPage > this.totalPageNums) {
+                message.warning("请输入指定数据范围！", 2);
+                break;
+              }
+            }
+            this.disabledAfter = false;
+            this.disabledBefore = false;
+            this.currentPage = this.jumpPage;
+            // 当数据只有一页的时候，跳转到第一页禁止点击上一页和下一页按钮
+            if(this.totalPageNums === 1){
+              this.disabledAfter = true;
+              this.disabledBefore = true;
+            }
+            // 跳转到第一页时，禁止点击上一页按钮
+            else if(this.currentPage === "1") {
+              this.disabledBefore = true;
+            }
+            // 跳转到最后一页时，禁止点击下一页按钮
+            else if (this.currentPage == this.totalPageNums) {
+              this.disabledAfter = true;
+            }
+            this.getWSData(this.jumpPage - 1);
+          }
+            break;
+          default:
+          //throw Error("not implemented case")
+        }
+      },
+      // 初始化第一次显示时上一页和下一页按钮的状态
+      disabledSelectPage() {
+        this.jumpPage = "";
+        this.disabledAfter = false;
+        this.disabledBefore = false;
+        // 初始化第一次加载数据显示时，默认显示在第一页，如果总页数为1或者0，则禁止点击上一页和下一页
+        if (this.totalPageNums === 1 || this.totalPageNums === 0) {
+          this.disabledAfter = true;
+          this.disabledBefore = true;
+          // 当总页数为0，则当前页数也为0
+          if(this.totalPageNums === 0) this.currentPage = 0;
+        } else {
+          // 总页数大于1，则可以点击下一页，禁止点击上一页
+          this.disabledBefore = true;
+        }
+      },
+      // 选择统计图类别
+      callback(key) {
+        this.searchReset(); //重新选择统计图类别后将词性下拉列表置空
+        if (this.ShowModel === "") {
+          message.warning("请先进行分词！", 2);
+        } else {
+          if (key === "1") {
+            this.tabStatus = "bar";
+          } else {
+            this.tabStatus = "pie";
+          }
+          this.arrList = [[]]; //数据清空
+          this.arrList = this.dataSetGroup(this.json_DataSet, 20); //进行数组的切分,将分词数据重置为全分词模式
+          this.totalPageNums = this.arrList.length; //总页数
+          this.currentPage = 1;
+          this.disabledSelectPage(); //初始化第一次显示时上一页和下一页按钮的状态
+          this.getWSData(0);
         }
       },
       // 选择请求url
@@ -242,29 +381,37 @@
           };
         }
         let dtTextJsonString = JSON.stringify(dtText);
-        if (showModel === "HanLP") {
-          param = {
-            dataSetId: dataSetId
-          };
-          url = this.url.getHanLPWS;
-        }
-        if (showModel === "Thulac") {
-          param = {
-            dataSetId: dataSetId
-          };
-          url = this.url.getThulacWS;
-        }
-        if (showModel === "Jieba") {
-          param = {
-            dataSetId: dataSetId
-          };
-          url = this.url.getJiebaWS;
-        }
-        if (showModel === "Ltp") {
-          param = {
-            dataSetId: dataSetId
-          };
-          url = this.url.getLtpWS;
+        switch (showModel) {
+          case 'HanLP': {
+            param = {
+              dataSetId: dataSetId
+            };
+            url = this.url.getHanLPWS;
+          }
+            break;
+          case 'Thulac': {
+            param = {
+              dataSetId: dataSetId
+            };
+            url = this.url.getThulacWS;
+          }
+            break;
+          case 'Jieba': {
+            param = {
+              dataSetId: dataSetId
+            };
+            url = this.url.getJiebaWS;
+          }
+            break;
+          case 'Ltp': {
+            param = {
+              dataSetId: dataSetId
+            };
+            url = this.url.getLtpWS;
+          }
+            break;
+          default:
+          //
         }
         if (url !== "") {
           this.loadData(url, param, dtTextJsonString);

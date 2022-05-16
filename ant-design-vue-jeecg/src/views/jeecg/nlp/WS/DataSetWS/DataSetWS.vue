@@ -253,10 +253,8 @@
         //子组件传值给父组件(dataSetResult就是子组件传过来的值)
         DataSetResultAll(dataSetResultAll){
           if(dataSetResultAll !== false){
-            alert(1);
             this.dataSetResultContent = dataSetResultAll;
           }else{
-            alert(2);
             //调用超时
           }
         }

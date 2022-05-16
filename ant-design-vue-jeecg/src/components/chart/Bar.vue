@@ -43,9 +43,7 @@
       }
     },
     methods: {
-      selectPage(value){
-        alert(value);
-      }
+
     },
     computed: {
       scale() {
