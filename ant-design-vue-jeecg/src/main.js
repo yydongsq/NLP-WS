@@ -49,6 +49,10 @@ import '@/components/jeecg/JVxeTable/install'
 import '@/components/JVxeCells/install'
 //表单验证
 import { rules } from '@/utils/rules'
+//引入axios模块（先下载“axios”）
+import axios from 'axios'
+//将axios挂载在vue原型链上
+Vue.prototype.$axios = axios;
 Vue.prototype.rules = rules
 Vue.config.productionTip = false
 Vue.use(Storage, config.storageOptions)

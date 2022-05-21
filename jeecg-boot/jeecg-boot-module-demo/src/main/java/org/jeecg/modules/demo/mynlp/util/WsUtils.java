@@ -51,6 +51,7 @@ public class WsUtils {
      * @return
      */
     public static Result<String> getWSResult(String wsModel, String dataSetId, TbNlpDataset tbNlpDataset) {
+        Result<String> result = new Result<String>();
         String dataSetText = getRequestDataSet(dataSetId, tbNlpDataset);
         if(dataSetText == ""){
             return Result.error("未找到对应数据",null);
@@ -60,21 +61,25 @@ public class WsUtils {
         switch (wsModel){
             case "hanLPWS": {
                 wsResult = ws.getHanLPWSByMyAPI(dataSetText);
+                result.setMessage("HanLP");
                 log.info("HanLP调用成功");
             }
             break;
             case "jiebaWS": {
                 wsResult = ws.getJiebaWS(dataSetText);
+                result.setMessage("Jieba");
                 log.info("Jieba调用成功");
             }
             break;
             case "ltpWS": {
                 wsResult = ws.getLtpWS(dataSetText);
+                result.setMessage("Ltp");
                 log.info("Ltp调用成功");
             }
             break;
             case "thulacWS": {
                 wsResult = ws.getThulacWS(dataSetText);
+                result.setMessage("Thulac");
                 log.info("Thulac调用成功");
             }
             break;
@@ -82,7 +87,6 @@ public class WsUtils {
                 //
             }
         }
-        Result<String> result = new Result<String>();
         result.setResult(wsResult);
         result.setSuccess(true);
         return result;

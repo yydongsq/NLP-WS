@@ -56,6 +56,7 @@ export function putNlpAction(url,parameter,dataSet) {
     method:'put',
     params: parameter,
     data: dataSet,
+    timeout: 30000,
     headers:{
       'Content-Type':'application/json;charset=utf-8'
     }
