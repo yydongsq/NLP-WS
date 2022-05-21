@@ -2,13 +2,14 @@ package org.jeecg.modules.demo.mynlp.util;
 
 import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.math3.stat.inference.TestUtils;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.jeecg.common.api.vo.Result;
+import org.jeecg.modules.demo.mynlp.common.WSCommon;
 import org.jeecg.modules.demo.mynlp.entity.TbNlpDataset;
 import org.jeecg.modules.demo.mynlp.service.impl.TbNlpDatasetServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,51 @@ public class WsUtils {
     @PostConstruct
     public void init() {
         wsUtils = this;
+    }
+
+    /**
+     * 调用指定模型进行分词通用方法
+     * @param wsModel
+     * @param dataSetId
+     * @param tbNlpDataset
+     * @return
+     */
+    public static Result<String> getWSResult(String wsModel, String dataSetId, TbNlpDataset tbNlpDataset) {
+        String dataSetText = getRequestDataSet(dataSetId, tbNlpDataset);
+        if(dataSetText == ""){
+            return Result.error("未找到对应数据",null);
+        }
+        WSCommon ws = new WSCommon();
+        String wsResult = "";
+        switch (wsModel){
+            case "hanLPWS": {
+                wsResult = ws.getHanLPWSByMyAPI(dataSetText);
+                log.info("HanLP调用成功");
+            }
+            break;
+            case "jiebaWS": {
+                wsResult = ws.getJiebaWS(dataSetText);
+                log.info("Jieba调用成功");
+            }
+            break;
+            case "ltpWS": {
+                wsResult = ws.getLtpWS(dataSetText);
+                log.info("Ltp调用成功");
+            }
+            break;
+            case "thulacWS": {
+                wsResult = ws.getThulacWS(dataSetText);
+                log.info("Thulac调用成功");
+            }
+            break;
+            default:{
+                //
+            }
+        }
+        Result<String> result = new Result<String>();
+        result.setResult(wsResult);
+        result.setSuccess(true);
+        return result;
     }
 
     /**

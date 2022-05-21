@@ -138,10 +138,10 @@
         disabledAfter: false, //设置下一页是否可点击
         pageVisiable: false, //翻页条显示与关闭
         url: {
-          getHanLPWS: "/jeecg-demo/mynlp/hanlp/hanLPWS",
-          getJiebaWS: "/jeecg-demo/mynlp/jieba/jiebaWS",
-          getLtpWS: "/jeecg-demo/mynlp/ltp/ltpWS",
-          getThulacWS: "/jeecg-demo/mynlp/thulac/thulacWS",
+          getHanLPWS: "/jeecg-demo/mynlp/hanLPWS",
+          getJiebaWS: "/jeecg-demo/mynlp/jiebaWS",
+          getLtpWS: "/jeecg-demo/mynlp/ltpWS",
+          getThulacWS: "/jeecg-demo/mynlp/thulacWS",
           queryTbNlpPosDetailListByMainId: "/jeecg-demo/mynlp/tbNlpPos/queryTbNlpPosDetailByMainId", //通过自然语言词性标注集明细主表ID查询
         },
         form: this.$form.createForm(this), // 只有这样注册后，才能通过表单拉取数据
