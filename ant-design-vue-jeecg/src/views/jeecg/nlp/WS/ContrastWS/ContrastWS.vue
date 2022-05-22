@@ -31,11 +31,11 @@
             </a-select>
           </a-form-item>
         </a-col>
-        <a-col :xl="2" :lg="7" :md="8" :sm="24">
-          <a-form-item label="是否展示词性">
-            <a-switch :checked="checked" @change="onChange"></a-switch>
-          </a-form-item>
-        </a-col>
+        <!--        <a-col :xl="2" :lg="7" :md="8" :sm="24">
+                  <a-form-item label="是否展示词性">
+                    <a-switch :checked="checked" @change="onChange"></a-switch>
+                  </a-form-item>
+                </a-col>-->
         <a-col :xl="5" :lg="7" :md="8" :sm="24">
             <span style="float: left;overflow: hidden;" class="table-page-search-submitButtons">
               <a-button type="primary" @click="searchQuery" icon="bar-chart">进行分词</a-button>
@@ -59,7 +59,7 @@
             </span>
             </span>
         <!-- 多列柱状图 -->
-        <BarMultidNlp title="分词对比图" :height="450"/>
+        <BarMultidNlp title="分词对比图" :height="450" :fields="fields" :dataSource="dataSource"/>
       </a-row>
     </a-form>
   </div>
@@ -67,8 +67,8 @@
 </template>
 
 <script>
-  import BarMultidNlp from '@/components/chart/BarMultidNlp';
-  import {message} from "ant-design-vue";
+  import BarMultidNlp from '@/views/jeecg/nlp/WS/Chart/BarMultidNlp.vue'
+  import {message} from "ant-design-vue"
   import {putNlpAction, getAction} from '@/api/manage'  //调用main.js中的通用请求方法
 
   export default {
@@ -85,7 +85,12 @@
         checked: false,
         dataSets: [],
         models: [],
-        wsResults: [],
+        arrListAllData: [],
+        filedsAllKey: [],
+        wsResults: [], //多个分词结果数据数组
+        wsSliceResults: [], //切分后的多个分词结果数据数组
+        dataSource: [], //多列柱状图数据源
+        fields: [], //多列柱状图x轴名称
         totalPageNums: 1, //总页数
         currentPage: 1, //当前页数
         jumpPage: 1, //跳转的页数
@@ -203,24 +208,150 @@
             default:
             //
           }
-        };
+        }
+        ;
         const loding = message.loading('模型加载中，请稍后...', 0); //第二个参数设置为0一直显示加载中
         this.$axios.all(setSelectUrl)
-          .then(that.$axios.spread(function (stWS, ndWS, rdWS,thWS) {
+          .then(that.$axios.spread(function (stWS, ndWS, rdWS, thWS) {
             loding(); //关闭正在加载弹窗
             message.success('模型加载成功！', 2);
             that.wsResults = [];
-            that.wsResults.push(stWS);
-            that.wsResults.push(ndWS);
-            that.wsResults.push(rdWS);
-            that.wsResults.push(thWS);
-            console.log('所有请求完成');
-            console.log('请求1结果', stWS);
-            console.log('请求2结果', ndWS);
-            console.log('请求3结果', rdWS);
-            console.log('请求4结果', thWS); //undefine
-            console.log(that.wsResults); //undefine
+            if (stWS !== undefined) {
+              let stWSData = JSON.parse(stWS.result).data;
+              that.wsResults.push(stWSData);
+            }
+            if (ndWS !== undefined) {
+              let ndWSData = JSON.parse(ndWS.result).data;
+              that.wsResults.push(ndWSData);
+            }
+            if (rdWS !== undefined) {
+              let rdWSData = JSON.parse(rdWS.result).data;
+              that.wsResults.push(rdWSData);
+            }
+            if (thWS !== undefined) {
+              let thWSData = JSON.parse(thWS.result).data;
+              that.wsResults.push(thWSData);
+            }
+            console.log("所有结果加载成功");
+            console.log(that.wsResults);
+            that.setBarMultidNlpDataSource();
+            that.getBarMultidNlpDataSource(0);
           }))
+      },
+      //设置多列柱状图数据源
+      setBarMultidNlpDataSource() {
+        this.wsSliceResults = [];
+        for (let i = 0; i < this.ModelNames.length; i++) {
+          this.wsSliceResults.push(this.dataSetGroup(this.wsResults[i], 12)); //进行数组的切分
+        }
+        console.info("this.wsSliceResults = ");
+        console.info(this.wsSliceResults);
+        let arrListAllData = [];
+        let arrListAllFields = [];
+        for (let i = 0; i < this.ModelNames.length; i++) {
+          let arrListData = [];
+          let arrListFields = [];
+          for (let j = 0; j < this.wsSliceResults[i].length; j++) {
+            let wsObj = {};
+            let wsWord = [];
+            for (let k = 0; k < this.wsSliceResults[i][j].length; k++) {
+              wsObj.type = this.ModelNames[i];
+              let key = this.wsSliceResults[i][j][k].word;
+              wsWord.push(key);
+              let y = Math.floor(Math.random() * 100) + 1; //生成[0,100]随机数
+              wsObj[key] = y;
+            }
+            arrListData.push(wsObj);
+            arrListFields.push(wsWord);
+          }
+          arrListAllData.push(arrListData);
+          arrListAllFields.push(arrListFields);
+        }
+        console.info("arrListAllData = ");
+        console.info(arrListAllData);
+        console.info("arrListAllFields = ");
+        console.info(arrListAllFields);
+
+        //this.fields =  ['4月', '18日', '中国','华盛顿','在', '大使','新华社', '电', '秦刚','美国', '驻'];
+        let lengthSize = [];
+        for (let i = 0; i < this.ModelNames.length; i++) {
+          lengthSize.push(arrListAllData[i].length);
+        }
+        let maxLength = Math.max.apply(Math, lengthSize);
+        this.totalPageNums = maxLength;
+        console.info("maxLength = " + maxLength);
+        this.disabledSelectPage();
+
+        let filedsAllKey = [];
+        for (let i = 0; i < maxLength; i++) {
+          let filedsKey = [];
+          let sliceListAll = [];
+          for (let j = 0; j < this.ModelNames.length; j++) {
+            let sliceArrList = [];
+            sliceArrList = arrListAllFields[j][i];
+            if(sliceArrList !== undefined){
+              /*console.info("sliceArrList = ");
+              console.info(sliceArrList);
+              console.info("sliceArrList.length = ");
+              console.info(sliceArrList.length);*/
+              sliceListAll.push(this.dataSetGroup(sliceArrList, 1));
+            }
+            if (j === this.ModelNames.length - 1) {
+              // console.info("sliceListAll = ");
+              // console.info(sliceListAll);
+              for (let k = 0; k < 12; k++) {
+                for (let m = 0; m < sliceListAll.length; m++) {
+                  filedsKey = filedsKey.concat(sliceListAll[m][k]);
+                  filedsKey = filedsKey.filter((item, index) => {
+                    return filedsKey.indexOf(item) === index
+                  })
+                }
+              }
+              // console.info("filedsKey = ");
+              // console.info(filedsKey);
+          }
+          }
+          filedsAllKey.push(filedsKey);
+        }
+        console.info("filedsAllKey = ");
+        console.info(filedsAllKey);
+        this.filedsAllKey = filedsAllKey;
+        this.arrListAllData = arrListAllData;
+      },
+      getBarMultidNlpDataSource(page) {
+        this.dataSource = [];
+        this.fields = [];
+        this.fields = this.filedsAllKey[page];
+        for (let i = 0; i < this.ModelNames.length; i++) {
+          this.dataSource.push(this.arrListAllData[i][page]);
+        }
+        console.info("dataSource = ");
+        console.info(this.dataSource);
+      },
+      // 将dataSetArr数组按照subGroupLength个一份分成若干数组
+      dataSetGroup(dataSetArr, subGroupLength) {
+        let index = 0;
+        let newArray = [];
+        while (index < dataSetArr.length) {
+          newArray.push(dataSetArr.slice(index, index += subGroupLength));
+        }
+        return newArray;
+      },
+      // 初始化第一次显示时上一页和下一页按钮的状态
+      disabledSelectPage() {
+        this.jumpPage = "";
+        this.disabledAfter = false;
+        this.disabledBefore = false;
+        // 初始化第一次加载数据显示时，默认显示在第一页，如果总页数为1或者0，则禁止点击上一页和下一页
+        if (this.totalPageNums === 1 || this.totalPageNums === 0) {
+          this.disabledAfter = true;
+          this.disabledBefore = true;
+          // 当总页数为0，则当前页数也为0
+          if (this.totalPageNums === 0) this.currentPage = 0;
+        } else {
+          // 总页数大于1，则可以点击下一页，禁止点击上一页
+          this.disabledBefore = true;
+        }
       },
       // 页面跳转
       selectPage(value) {
@@ -235,7 +366,7 @@
             } else {
               this.currentPage = this.totalPageNums === 1 ? 1 : 0; //筛选后如果没有数据，则点击首页显示总页数为0
             }
-            this.getWSData(0);
+            this.getBarMultidNlpDataSource(0);
           }
             break;
           case 'last': {
@@ -246,7 +377,7 @@
               this.disabledBefore = false;
             }
             this.currentPage = this.totalPageNums;
-            this.getWSData(this.totalPageNums - 1);
+            this.getBarMultidNlpDataSource(this.totalPageNums - 1);
           }
             break;
           case 'before': {
@@ -257,7 +388,7 @@
             if (this.currentPage === 1) {
               this.disabledBefore = true;
             }
-            this.getWSData(this.currentPage - 1);
+            this.getBarMultidNlpDataSource(this.currentPage - 1);
           }
             break;
           case 'after': {
@@ -268,7 +399,7 @@
             if (this.currentPage === this.totalPageNums) {
               this.disabledAfter = true;
             }
-            this.getWSData(this.currentPage - 1);
+            this.getBarMultidNlpDataSource(this.currentPage - 1);
           }
             break;
           case 'jump': {
@@ -297,7 +428,7 @@
             else if (this.currentPage == this.totalPageNums) {
               this.disabledAfter = true;
             }
-            this.getWSData(this.jumpPage - 1);
+            this.getBarMultidNlpDataSource(this.jumpPage - 1);
           }
             break;
           default:

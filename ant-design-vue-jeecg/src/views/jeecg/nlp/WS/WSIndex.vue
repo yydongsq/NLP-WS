@@ -94,8 +94,8 @@
 </template>
 
 <script>
-  import Bar from '@/components/chart/Bar'
-  import Pie from '@/components/chart/Pie'
+  import Bar from '@/views/jeecg/nlp/WS/Chart/BarNlp.vue'
+  import Pie from '@/views/jeecg/nlp/WS/Chart/PieNlp.vue'
   import ACol from 'ant-design-vue/es/grid/Col'
   import {putNlpAction, getAction} from '@/api/manage'
   import {message, Button} from 'ant-design-vue';
