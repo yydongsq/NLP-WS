@@ -208,34 +208,63 @@
             default:
             //
           }
-        }
-        ;
+        };
         const loding = message.loading('模型加载中，请稍后...', 0); //第二个参数设置为0一直显示加载中
         this.$axios.all(setSelectUrl)
           .then(that.$axios.spread(function (stWS, ndWS, rdWS, thWS) {
             loding(); //关闭正在加载弹窗
-            message.success('模型加载成功！', 2);
             that.wsResults = [];
+            let stWSSuccess =  true;
+            let ndWSSuccess =  true;
+            let rdWSSuccess =  true;
+            let thWSSuccess =  true;
             if (stWS !== undefined) {
-              let stWSData = JSON.parse(stWS.result).data;
-              that.wsResults.push(stWSData);
+              stWSSuccess = stWS.success;
+              if(stWSSuccess !== undefined && stWSSuccess !== false){
+                let stWSData = JSON.parse(stWS.result).data;
+                that.wsResults.push(stWSData);
+              }else{
+                stWSSuccess = false;
+              }
             }
             if (ndWS !== undefined) {
-              let ndWSData = JSON.parse(ndWS.result).data;
-              that.wsResults.push(ndWSData);
+              ndWSSuccess = ndWS.success;
+              if(ndWSSuccess !== undefined && ndWSSuccess !== false){
+                let ndWSData = JSON.parse(ndWS.result).data;
+                that.wsResults.push(ndWSData);
+              }else{
+                ndWSSuccess = false;
+              }
             }
             if (rdWS !== undefined) {
-              let rdWSData = JSON.parse(rdWS.result).data;
-              that.wsResults.push(rdWSData);
+              rdWSSuccess = rdWS.success;
+              if(rdWSSuccess !== undefined && rdWSSuccess !== false){
+                let rdWSData = JSON.parse(rdWS.result).data;
+                that.wsResults.push(rdWSData);
+              }else{
+                rdWSSuccess = false;
+              }
             }
             if (thWS !== undefined) {
-              let thWSData = JSON.parse(thWS.result).data;
-              that.wsResults.push(thWSData);
+              thWSSuccess = thWS.success;
+              // 请求没有超时并且成功返回数据
+              if(thWSSuccess !== undefined && thWSSuccess !== false){
+                let thWSData = JSON.parse(thWS.result).data;
+                that.wsResults.push(thWSData);
+              }else{
+                // 请求超时，thWS = 后端返回错误信息：请求超时，请重试！
+                thWSSuccess = false;
+              }
             }
-            console.log("所有结果加载成功");
-            console.log(that.wsResults);
-            that.setBarMultidNlpDataSource();
-            that.getBarMultidNlpDataSource(0);
+            if(stWSSuccess && ndWSSuccess && rdWSSuccess && thWSSuccess){
+              message.success('模型加载成功！', 2);
+              console.log("所有结果加载成功");
+              console.log(that.wsResults);
+              that.setBarMultidNlpDataSource();
+              that.getBarMultidNlpDataSource(0);
+            }else{
+              message.warning('请求超时，请重试！', 2);
+            }
           }))
       },
       //设置多列柱状图数据源
@@ -279,7 +308,7 @@
         }
         let maxLength = Math.max.apply(Math, lengthSize);
         this.totalPageNums = maxLength;
-        console.info("maxLength = " + maxLength);
+        this.currentPage = 1;
         this.disabledSelectPage();
 
         let filedsAllKey = [];
@@ -289,16 +318,10 @@
           for (let j = 0; j < this.ModelNames.length; j++) {
             let sliceArrList = [];
             sliceArrList = arrListAllFields[j][i];
-            if(sliceArrList !== undefined){
-              /*console.info("sliceArrList = ");
-              console.info(sliceArrList);
-              console.info("sliceArrList.length = ");
-              console.info(sliceArrList.length);*/
+            if (sliceArrList !== undefined) {
               sliceListAll.push(this.dataSetGroup(sliceArrList, 1));
             }
             if (j === this.ModelNames.length - 1) {
-              // console.info("sliceListAll = ");
-              // console.info(sliceListAll);
               for (let k = 0; k < 12; k++) {
                 for (let m = 0; m < sliceListAll.length; m++) {
                   filedsKey = filedsKey.concat(sliceListAll[m][k]);
@@ -307,9 +330,7 @@
                   })
                 }
               }
-              // console.info("filedsKey = ");
-              // console.info(filedsKey);
-          }
+            }
           }
           filedsAllKey.push(filedsKey);
         }
