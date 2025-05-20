@@ -69,6 +69,8 @@ trusted-host = mirrors.aliyun.com
 
 **pip下载资源的默认路径:** python安装依赖的默认目录/Lib/site-package/，可直接解压项目目录下的site-packages.zip，适用于Python 3.10.2、pip 21.2.4。
 
+**下载整理好的依赖库：** 百度网盘链接 https://pan.baidu.com/s/1ZKS7kl_WS_8cwz1ZtJPToQ 提取码: yyds
+
 ### 2.3 pip命令
 
 **查看所有下载的包列表：**

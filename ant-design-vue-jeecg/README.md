@@ -45,6 +45,8 @@ yarn run build
 yarn run lint
 ```
 
+**下载整理好的node依赖：** 百度网盘链接 https://pan.baidu.com/s/1ZKS7kl_WS_8cwz1ZtJPToQ 提取码: yyds
+
 <img src="assets/Readme/image-20250520161529267.png" alt="image-20250520161529267" style="zoom:33%;" />
 
 **配置NLP菜单路由：** **参考官方文档** https://doc.jeecg.com/2043884
