@@ -45,11 +45,11 @@ yarn run build
 yarn run lint
 ```
 
-<img src="E:/typora/assets/README/image-20250520161529267.png" alt="image-20250520161529267" style="zoom:33%;" />
+<img src="/assets/README/image-20250520161529267.png" alt="image-20250520161529267" style="zoom:33%;" />
 
 **配置NLP菜单路由：** **参考官方文档** https://doc.jeecg.com/2043884
 
-<img src="E:/typora/assets/README/image-20250520160411587.png" alt="image-20250520160411587" style="zoom: 33%;" />
+<img src="/assets/README/image-20250520160411587.png" alt="image-20250520160411587" style="zoom: 33%;" />
 
 其他说明
 ----
