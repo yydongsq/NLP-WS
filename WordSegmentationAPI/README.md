@@ -462,8 +462,8 @@ pip install hanlp -U
 
 **使用Vscode打开项目：**
 
-<img src="assets/README/image-20250520145944966.png" alt="image-20250520145944966" style="zoom:50%;" />
+<img src="assets/Readme/image-20250520145944966.png" alt="image-20250520145944966" style="zoom:50%;" />
 
 **使用Postman工具测试分词接口是否可用：** url中可以使用不同的分词工具，例如http://127.0.0.1:5000/jieba/sentence、http://127.0.0.1:5000/thulac/sentence、http://127.0.0.1:5000/ltp/sentence
 
-<img src="assets/README/image-20250520150325372.png" alt="image-20250520150325372" style="zoom:33%;" />
+<img src="assets/Readme/image-20250520150325372.png" alt="image-20250520150325372" style="zoom:33%;" />

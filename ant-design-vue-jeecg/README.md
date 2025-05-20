@@ -45,13 +45,13 @@ yarn run build
 yarn run lint
 ```
 
-<img src="/assets/README/image-20250520161529267.png" alt="image-20250520161529267" style="zoom:33%;" />
+<img src="assets/Readme/image-20250520161529267.png" alt="image-20250520161529267" style="zoom:33%;" />
 
 **配置NLP菜单路由：** **参考官方文档** https://doc.jeecg.com/2043884
 
-<img src="/assets/README/image-20250520160411587.png" alt="image-20250520160411587" style="zoom: 33%;" />
+<img src="assets/Readme/image-20250520160411587.png" alt="image-20250520160411587" style="zoom: 33%;" />
 
-<img src="assets/README/image-20250520170823303.png" alt="image-20250520170823303" style="zoom:33%;" />
+<img src="assets/Readme/image-20250520170823303.png" alt="image-20250520170823303" style="zoom:33%;" />
 
 其他说明
 ----
@@ -86,7 +86,7 @@ yarn run lint
 
 - [Vue](https://cn.vuejs.org/v2/guide)
 
-- [路由/菜单说明](https://github.com/zhangdaiscott/jeecg-boot/tree/master/ant-design-vue-jeecg/src/router/README.md)
+- [路由/菜单说明](https://github.com/zhangdaiscott/jeecg-boot/tree/master/ant-design-vue-jeecg/src/router/Readme.md)
 
 - [ANTD 默认配置项](https://github.com/zhangdaiscott/jeecg-boot/tree/master/ant-design-vue-jeecg/src/defaultSettings.js)
 
