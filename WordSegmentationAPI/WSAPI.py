@@ -60,12 +60,11 @@ def select_WSType_byJieba(text,WS_type):
 def select_WSType_byLtp(text,WS_type):
     if WS_type == "sentence":
         ltp = LTP()  # 载入模型，默认加载 Small 模型
-        segment, _ = ltp.seg([text])
-        seg, hidden = ltp.seg([text])   #分词
-        pos = ltp.pos(hidden)   #词性标注(LTP使用的是863词性标注集)
-        t = {}
-        t[0] = seg.pop()
-        t[1] = pos.pop()
+        output = ltp.pipeline([text], tasks=["cws", "pos"])  # 执行分词+词性标注
+        t = {
+            0: output.cws[0],  # 分词结果
+            1: output.pos[0]   # 词性结果
+        }
         result = jsonify(t) #转换为json字符串
         print("----------调用Ltp成功----------")
         return result
@@ -94,6 +93,7 @@ def select_WSType_byHanLP(text,WS_type):
 class Thulac(Resource):
     @api.representation('application/json;charset=utf-8') 
     def post(self,WS_type):
+        print("----------开始调用Thulac----------")
         args = parser.parse_args()
         text = args['text']
         result = select_WSType_byThulac(text,WS_type)
@@ -103,6 +103,7 @@ class Thulac(Resource):
 class Jieba(Resource):
     @api.representation('application/json;charset=utf-8') 
     def post(self,WS_type):
+        print("----------开始调用Jieba----------")
         args = parser.parse_args()
         text = args['text']
         result = select_WSType_byJieba(text,WS_type)
@@ -112,6 +113,7 @@ class Jieba(Resource):
 class Ltp(Resource):
     @api.representation('application/json;charset=utf-8') 
     def post(self,WS_type):
+        print("----------开始调用Ltp----------")
         args = parser.parse_args()
         text = args['text']
         result = select_WSType_byLtp(text,WS_type)
@@ -121,6 +123,7 @@ class Ltp(Resource):
 class HanLP(Resource):
     @api.representation('application/json;charset=utf-8') 
     def post(self,WS_type):
+        print("----------开始调用HanLP----------")
         args = parser.parse_args()
         text = args['text']
         result = select_WSType_byHanLP(text,WS_type)

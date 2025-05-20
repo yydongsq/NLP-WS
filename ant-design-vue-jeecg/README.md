@@ -3,38 +3,27 @@ Ant Design Jeecg Vue
 
 当前最新版本： 3.1.0（发布日期：20220301）
 
-Overview
-----
+## 前端技术架构
 
-基于 [Ant Design of Vue](https://vuecomponent.github.io/ant-design-vue/docs/vue/introduce-cn/) 实现的 Ant Design Pro  Vue 版
-Jeecg-boot 的前端UI框架，采用前后端分离方案，提供强大代码生成器的低代码平台。
-前端页面代码和后端功能代码一键生成，不需要写任何代码，保持jeecg一贯的强大！！
+基于 [Ant Design of Vue](https://vuecomponent.github.io/ant-design-vue/docs/vue/introduce-cn/) 实现的 Ant Design Pro  Vue 版Jeecg-boot 的前端UI框架，采用前后端分离方案，提供强大代码生成器的低代码平台。前端页面代码和后端功能代码一键生成，不需要写任何代码！
 
-
-
-#### 前端技术
- 
 - 基础框架：[ant-design-vue](https://github.com/vueComponent/ant-design-vue) - Ant Design Of Vue 实现
-- JavaScript框架：Vue
+- JavaScript框架：[Vue 2.6.10](https://cn.vuejs.org/),[Vuex](https://vuex.vuejs.org/zh/),[Vue Router](https://router.vuejs.org/zh/)
 - Webpack
-- node
-- yarn
 - eslint
 - @vue/cli 3.2.1
 - [vue-cropper](https://github.com/xyxiao001/vue-cropper) - 头像裁剪组件
 - [@antv/g2](https://antv.alipay.com/zh-cn/index.html) - Alipay AntV 数据可视化图表
 - [Viser-vue](https://viserjs.github.io/docs.html#/viser/guide/installation)  - antv/g2 封装实现
 
+## 开发环境
 
+- node 10.0+ （推荐使用 v12.22.12）
+- npm 5.6.0+ （推荐使用 6.14.16）
+- yarn 1.21.1+ （推荐使用 1.22.22）
 
-项目下载和运行
+项目启动
 ----
-
-- 拉取项目代码
-```bash
-git clone https://github.com/zhangdaiscott/jeecg-boot.git
-cd  jeecg-boot/ant-design-vue-jeecg
-```
 
 - 安装依赖
 ```
@@ -56,7 +45,11 @@ yarn run build
 yarn run lint
 ```
 
+<img src="E:/typora/assets/README/image-20250520161529267.png" alt="image-20250520161529267" style="zoom:33%;" />
 
+**配置NLP菜单路由：** **参考官方文档** https://doc.jeecg.com/2043884
+
+<img src="E:/typora/assets/README/image-20250520160411587.png" alt="image-20250520160411587" style="zoom: 33%;" />
 
 其他说明
 ----
@@ -83,8 +76,6 @@ yarn run lint
   }
 ```
 
-
-
 附属文档
 ----
 - [Ant Design Vue](https://vuecomponent.github.io/ant-design-vue/docs/vue/introduce-cn)
@@ -99,37 +90,3 @@ yarn run lint
 
 - 其他待补充...
 
-
-备注
-----
-
-> @vue/cli 升级后，eslint 规则更新了。由于影响到全部 .vue 文件，需要逐个验证。既暂时关闭部分原本不验证的规则，后期维护时，在逐步修正这些 rules
-
-
-Docker 镜像使用
-----
-
- ``` 
-# 1.修改前端项目的后台域名
-    .env.development
-    域名改成： http://jeecg-boot-system:8080/jeecg-boot
-   
-# 2.先进入打包前端项目
-  yarn run build
-
-# 3.构建镜像
-  docker build -t nginx:jeecgboot .
-
-# 4.启动镜像
-  docker run --name jeecg-boot-nginx -p 80:80 -d nginx:jeecgboot
-
-# 5.配置host
-
-    # jeecgboot
-    127.0.0.1   jeecg-boot-redis
-    127.0.0.1   jeecg-boot-mysql
-    127.0.0.1   jeecg-boot-system
-  
-# 6.访问前台项目
-  http://localhost:80
-``` 
